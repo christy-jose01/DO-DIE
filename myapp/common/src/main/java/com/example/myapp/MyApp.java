@@ -57,6 +57,11 @@ public class MyApp extends com.codename1.system.Lifecycle {
         signInForm.showBack();
     }
 
+    public void showHomePage() {
+        HomePage homePage = new HomePage(this);
+        homePage.show();
+    }
+
     public class HomePage extends Form {
 
         private final MyApp mainApp;
@@ -67,7 +72,7 @@ public class MyApp extends com.codename1.system.Lifecycle {
 
             getToolbar().addCommandToSideMenu("Tasks", null, e -> showTab("Tasks"));
             getToolbar().addCommandToSideMenu("Character Selection", null, e -> showCharacterSelection());
-            getToolbar().addCommandToSideMenu("Character Selection", null, e -> showTab("Character Selection"));
+          //  getToolbar().addCommandToSideMenu("Character Selection", null, e -> showTab("Character Selection"));
             getToolbar().addCommandToSideMenu("Character Status", null, e -> showTab("Character Status"));
             getToolbar().addCommandToSideMenu("Achievements", null, e -> showTab("Achievements"));
             getToolbar().addCommandToSideMenu("Settings", null, e -> showTab("Settings"));
@@ -82,19 +87,36 @@ public class MyApp extends com.codename1.system.Lifecycle {
             mainApp.showSignInForm();
         }
 
-        private void showCharacterSelection(){
-            CharacterSelectionPage characterSelectionPage = new CharacterSelectionPage();
-            characterSelectionPage.show(); 
+
+        private void showCharacterSelection() {
+            CharacterSelectionPage characterSelectionPage = new CharacterSelectionPage(mainApp);
+            characterSelectionPage.show();
         }
+
+
+        
     }
 
     public class CharacterSelectionPage extends Form {
-        public CharacterSelectionPage(){
-            super("Character Selection", BoxLayout.y());
+        private final MyApp mainApp;
 
-            //add character selection page components and logic here
+        public CharacterSelectionPage(MyApp mainApp) {
+            super("Character Selection", BoxLayout.y());
+            this.mainApp = mainApp;
+    
+            // ... (your existing code)
+            Button backButton = new Button(FontImage.createMaterial(FontImage.MATERIAL_ARROW_BACK, "Back", 5));
+            backButton.addActionListener(e -> showHomePage());
+            addComponent(backButton);
+            
         }
+        private void showHomePage() {
+            mainApp.showHomePage();
+        }
+
     }
+            
+        
 
     //Christy's section: Tasks
 
