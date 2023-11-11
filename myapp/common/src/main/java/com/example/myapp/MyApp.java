@@ -1,38 +1,28 @@
 
 package com.example.myapp;
 
-import java.lang.reflect.Method;
-
 import com.codename1.components.SpanLabel;
 import com.codename1.ui.Button;
-import com.codename1.ui.Component;
 import com.codename1.ui.Container;
 import com.codename1.ui.Dialog;
+import com.codename1.ui.Font;
 import com.codename1.ui.FontImage;
 import com.codename1.ui.Form;
 //import com.codename1.ui.ProgressBar;
 import com.codename1.ui.Graphics;
-import com.codename1.ui.TextComponent;
-import com.codename1.ui.TextComponentPassword;
-import com.codename1.ui.geom.Dimension;
-import com.codename1.ui.layouts.BoxLayout;
-import com.codename1.ui.layouts.BorderLayout;
-import com.codename1.ui.plaf.Style;
-import com.codename1.ui.util.Resources;
-import com.codename1.ui.util.UITimer;
-import com.codename1.ui.plaf.Border;
-import com.codename1.ui.Font;
-
-
-
-
-import javafx.scene.control.ProgressBar;
 
 // Import for ProgressBar
 //import com.codename1.ui.spinner.ProgressBar;
 
 // Import for Label
 import com.codename1.ui.Label;
+import com.codename1.ui.TextComponent;
+import com.codename1.ui.TextComponentPassword;
+import com.codename1.ui.geom.Dimension;
+import com.codename1.ui.layouts.BorderLayout;
+import com.codename1.ui.layouts.BoxLayout;
+import com.codename1.ui.plaf.Border;
+import com.codename1.ui.plaf.Style;
 
 public class MyApp extends com.codename1.system.Lifecycle {
     private Form signInForm;
@@ -103,7 +93,7 @@ public class MyApp extends com.codename1.system.Lifecycle {
           //  getToolbar().addCommandToSideMenu("Character Status", null, e -> showTab("Character Status"));
             getToolbar().addCommandToSideMenu("Character Status", null, e -> showCharacterStatus());
             getToolbar().addCommandToSideMenu("Achievements", null, e -> showTab("Achievements"));
-            getToolbar().addCommandToSideMenu("Character Selection", null, e -> showTab("Character Selection"));
+        //    getToolbar().addCommandToSideMenu("Character Selection", null, e -> showTab("Character Selection"));
             getToolbar().addCommandToSideMenu("Character Status", null, e -> showTab("Character Status"));
             getToolbar().addCommandToSideMenu("Weekly Summary", null, e -> showWeeklySummary());
             getToolbar().addCommandToSideMenu("Settings", null, e -> showTab("Settings"));
