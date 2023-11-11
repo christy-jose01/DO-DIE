@@ -73,7 +73,7 @@ public class MyApp extends com.codename1.system.Lifecycle {
             getToolbar().addCommandToSideMenu("Character Selection", null, e -> showCharacterSelection());
             getToolbar().addCommandToSideMenu("Character Selection", null, e -> showTab("Character Selection"));
             getToolbar().addCommandToSideMenu("Character Status", null, e -> showTab("Character Status"));
-            getToolbar().addCommandToSideMenu("Achievements", null, e -> showTab("Achievements"));
+            getToolbar().addCommandToSideMenu("Achievements", null, e -> showAchievementsPage());
             getToolbar().addCommandToSideMenu("Settings", null, e -> showTab("Settings"));
             getToolbar().addCommandToSideMenu("Logout", null, e -> logout());
         }
@@ -100,6 +100,11 @@ public class MyApp extends com.codename1.system.Lifecycle {
             settingsPage.setPreviousForm(this); // Set the previous form to the current instance of HomePage
             settingsPage.show();
         }
+
+        private void showAchievementsPage() {
+            AchievementsPage achievementsPage = new AchievementsPage();
+            achievementsPage.show();
+        }
     }
 
     public class CharacterSelectionPage extends Form {
@@ -110,7 +115,11 @@ public class MyApp extends com.codename1.system.Lifecycle {
         }
     }
 
-    public class SettingsPage extends Form {
+    public interface PreviousFormSetter {
+        void setPreviousForm(Form previousForm);
+    }
+    
+    public class SettingsPage extends Form implements PreviousFormSetter {
 
         private Form previousForm;
     
@@ -153,6 +162,7 @@ public class MyApp extends com.codename1.system.Lifecycle {
             settingsPage.show();
         }
     
+        @Override
         public void setPreviousForm(Form previousForm) {
             this.previousForm = previousForm;
         }
@@ -303,6 +313,31 @@ public class MyApp extends com.codename1.system.Lifecycle {
             }
         }
     }
+
+    public class AchievementsPage extends Form {
+
+        public AchievementsPage() {
+            super("Achievements", BoxLayout.y());
+    
+            // Add achievements content here
+            addAchievement("Completed Quest 1");
+            addAchievement("Reached Level 10");
+            addAchievement("Earned 1000 Gold");
+    
+            // Add a back button to return to the previous form
+            getToolbar().setBackCommand("Back", e -> showPreviousForm());
+        }
+    
+        private void addAchievement(String achievementText) {
+            Label achievementLabel = new Label(achievementText);
+            add(achievementLabel);
+        }
+    
+        private void showPreviousForm() {
+            showBack();
+        }
+    }
+    
     //Christy's section: Tasks
 
     //Andrea's section:  Achievements, Settings
