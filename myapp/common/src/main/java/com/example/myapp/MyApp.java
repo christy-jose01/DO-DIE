@@ -66,6 +66,7 @@ public class MyApp extends com.codename1.system.Lifecycle {
             this.mainApp = mainApp;
 
             getToolbar().addCommandToSideMenu("Tasks", null, e -> showTab("Tasks"));
+            getToolbar().addCommandToSideMenu("Character Selection", null, e -> showCharacterSelection());
             getToolbar().addCommandToSideMenu("Character Selection", null, e -> showTab("Character Selection"));
             getToolbar().addCommandToSideMenu("Character Status", null, e -> showTab("Character Status"));
             getToolbar().addCommandToSideMenu("Achievements", null, e -> showTab("Achievements"));
@@ -80,5 +81,24 @@ public class MyApp extends com.codename1.system.Lifecycle {
         private void logout() {
             mainApp.showSignInForm();
         }
+
+        private void showCharacterSelection(){
+            CharacterSelectionPage characterSelectionPage = new CharacterSelectionPage();
+            characterSelectionPage.show(); 
+        }
     }
+
+    public class CharacterSelectionPage extends Form {
+        public CharacterSelectionPage(){
+            super("Character Selection", BoxLayout.y());
+
+            //add character selection page components and logic here
+        }
+    }
+
+    //Christy's section: Tasks
+
+    //Andrea's section:  Achievements, Settings
+
+    //Dawn's section: Characters 
 }
