@@ -510,3 +510,4 @@ public class MyApp extends com.codename1.system.Lifecycle {
 
     //Dawn's section: Characters 
 
+}
