@@ -179,7 +179,6 @@ public class MyApp extends com.codename1.system.Lifecycle {
             goToPreviousPageButton.addActionListener(e -> goToPreviousPage());
 
             Container contentContainer = new Container(BoxLayout.y());
-            contentContainer.add(new Label("Account Settings", "Title"));
             contentContainer.add(new SpanLabel("Account settings content goes here"));
 
             add(contentContainer);
@@ -208,7 +207,6 @@ public class MyApp extends com.codename1.system.Lifecycle {
             goToPreviousPageButton.addActionListener(e -> goToPreviousPage());
 
             Container contentContainer = new Container(BoxLayout.y());
-            contentContainer.add(new Label("Privacy Settings", "Title"));
             contentContainer.add(new SpanLabel("Privacy settings content goes here"));
 
             add(contentContainer);
@@ -237,7 +235,6 @@ public class MyApp extends com.codename1.system.Lifecycle {
             goToPreviousPageButton.addActionListener(e -> goToPreviousPage());
 
             Container contentContainer = new Container(BoxLayout.y());
-            contentContainer.add(new Label("Notification Settings", "Title"));
             contentContainer.add(new SpanLabel("Notification settings content goes here"));
 
             add(contentContainer);
@@ -266,7 +263,6 @@ public class MyApp extends com.codename1.system.Lifecycle {
             goToPreviousPageButton.addActionListener(e -> goToPreviousPage());
 
             Container contentContainer = new Container(BoxLayout.y());
-            contentContainer.add(new Label("Contact Support", "Title"));
             contentContainer.add(new SpanLabel("Contact support content goes here"));
 
             add(contentContainer);
@@ -295,7 +291,6 @@ public class MyApp extends com.codename1.system.Lifecycle {
             goToPreviousPageButton.addActionListener(e -> goToPreviousPage());
 
             Container contentContainer = new Container(BoxLayout.y());
-            contentContainer.add(new Label("Rate Us", "Title"));
             contentContainer.add(new SpanLabel("Rate us content goes here"));
 
             add(contentContainer);
