@@ -114,6 +114,12 @@ public class MyApp extends com.codename1.system.Lifecycle {
                 customProgressBar.setProgress(value);
             }
         }
+
+        private void showSettingsPage() {
+            SettingsPage settingsPage = new SettingsPage();
+            settingsPage.setPreviousForm(this); // Set the previous form to the current instance of HomePage
+            settingsPage.show();
+        }
     
         private void showTab(String tabName) {
             if ("Settings".equals(tabName)) {
@@ -121,6 +127,11 @@ public class MyApp extends com.codename1.system.Lifecycle {
             } else {
                 Dialog.show("Tab Selected", "You selected the " + tabName + " tab", "OK", null);
             }
+        }
+        
+        private void showWeeklySummary() {
+            WeeklySummaryPage weeklySummaryPage = new WeeklySummaryPage(this);
+            weeklySummaryPage.show();
         }
 
         private void logout() {
@@ -136,17 +147,10 @@ public class MyApp extends com.codename1.system.Lifecycle {
         private void showCharacterStatus() {
             CharacterStatusPage characterStatusPage = new CharacterStatusPage(mainApp);
             characterStatusPage.show();
-        private void showSettingsPage() {
-            SettingsPage settingsPage = new SettingsPage();
-            settingsPage.setPreviousForm(this); // Set the previous form to the current instance of HomePage
-            settingsPage.show();
-        }
+        
 
         
-        private void showWeeklySummary() {
-            WeeklySummaryPage weeklySummaryPage = new WeeklySummaryPage(this);
-            weeklySummaryPage.show();
-        }
+        
         
     }
 
@@ -246,11 +250,13 @@ public class MyApp extends com.codename1.system.Lifecycle {
             settingsPage.show();
         }
     
+    
         @Override
+    
         public void setPreviousForm(Form previousForm) {
             this.previousForm = previousForm;
         }
-    
+
         private void goToPreviousPage() {
             if (previousForm != null) {
                 previousForm.showBack();
