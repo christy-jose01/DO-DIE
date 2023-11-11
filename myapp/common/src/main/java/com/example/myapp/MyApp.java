@@ -121,9 +121,10 @@ public class MyApp extends com.codename1.system.Lifecycle {
 
         
         private void showWeeklySummary() {
-            WeeklySummaryPage weeklySummaryPage = new WeeklySummaryPage();
+            WeeklySummaryPage weeklySummaryPage = new WeeklySummaryPage(this);
             weeklySummaryPage.show();
         }
+        
     }
 
     public class CharacterSelectionPage extends Form {
@@ -376,8 +377,11 @@ public class MyApp extends com.codename1.system.Lifecycle {
 
     public class WeeklySummaryPage extends Form {
 
-        public WeeklySummaryPage() {
+        private final Form previousForm;
+    
+        public WeeklySummaryPage(Form previousForm) {
             super("Weekly Summary", BoxLayout.y());
+            this.previousForm = previousForm;
     
             // Days of the week
             String[] days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
@@ -397,7 +401,13 @@ public class MyApp extends com.codename1.system.Lifecycle {
             }
     
             // Set the back command to return to the previous form
-            getToolbar().setBackCommand("Back", e -> showBack());
+            getToolbar().setBackCommand("Back", e -> goToPreviousPage());
+        }
+    
+        private void goToPreviousPage() {
+            if (previousForm != null) {
+                previousForm.showBack();
+            }
         }
     
         private Style createDayLabelStyle() {
@@ -408,9 +418,7 @@ public class MyApp extends com.codename1.system.Lifecycle {
             //dayLabelStyle.setFont(Font.createTrueTypeFont("Inter", "Inter-Regular.ttf", Font.STYLE_PLAIN, 20));
             //dayLabelStyle.setFont(Font.createTrueTypeFont("Inter", "Inter-Regular.ttf").derive(Font.STYLE_PLAIN, 20));
             dayLabelStyle.setFont(Font.createSystemFont(Font.FACE_SYSTEM, Font.STYLE_PLAIN, Font.SIZE_MEDIUM));
-
-
-
+    
             return dayLabelStyle;
         }
     
@@ -426,13 +434,9 @@ public class MyApp extends com.codename1.system.Lifecycle {
             spacerStyle.setBgTransparency(255);
             return spacerStyle;
         }
-        private void goToPreviousPage() {
-            if (previousForm != null) {
-                previousForm.showBack();
-            }
-        }
-    
+        
     }
+    
     
     
     
