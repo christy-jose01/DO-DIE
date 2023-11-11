@@ -81,4 +81,10 @@ public class MyApp extends com.codename1.system.Lifecycle {
             mainApp.showSignInForm();
         }
     }
+
+    //Christy's section: Tasks
+
+    //Andrea's section:  Achievements, Settings
+
+    //Dawn's section: Characters 
 }
