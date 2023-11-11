@@ -1,9 +1,11 @@
+
 package com.example.myapp;
 
 import com.codename1.ui.Button;
 import com.codename1.ui.Dialog;
 import com.codename1.ui.FontImage;
 import com.codename1.ui.Form;
+//import com.codename1.ui.ProgressBar;
 import com.codename1.ui.TextComponent;
 import com.codename1.ui.TextComponentPassword;
 import com.codename1.ui.layouts.BoxLayout;
@@ -73,7 +75,8 @@ public class MyApp extends com.codename1.system.Lifecycle {
             getToolbar().addCommandToSideMenu("Tasks", null, e -> showTab("Tasks"));
             getToolbar().addCommandToSideMenu("Character Selection", null, e -> showCharacterSelection());
           //  getToolbar().addCommandToSideMenu("Character Selection", null, e -> showTab("Character Selection"));
-            getToolbar().addCommandToSideMenu("Character Status", null, e -> showTab("Character Status"));
+          //  getToolbar().addCommandToSideMenu("Character Status", null, e -> showTab("Character Status"));
+            getToolbar().addCommandToSideMenu("Character Status", null, e -> showCharacterStatus());
             getToolbar().addCommandToSideMenu("Achievements", null, e -> showTab("Achievements"));
             getToolbar().addCommandToSideMenu("Settings", null, e -> showTab("Settings"));
             getToolbar().addCommandToSideMenu("Logout", null, e -> logout());
@@ -93,7 +96,10 @@ public class MyApp extends com.codename1.system.Lifecycle {
             characterSelectionPage.show();
         }
 
-
+        private void showCharacterStatus() {
+            CharacterStatusPage characterStatusPage = new CharacterStatusPage(mainApp);
+            characterStatusPage.show();
+        }
         
     }
 
@@ -104,7 +110,8 @@ public class MyApp extends com.codename1.system.Lifecycle {
             super("Character Selection", BoxLayout.y());
             this.mainApp = mainApp;
     
-            // ... (your existing code)
+            
+            
             Button backButton = new Button(FontImage.createMaterial(FontImage.MATERIAL_ARROW_BACK, "Back", 5));
             backButton.addActionListener(e -> showHomePage());
             addComponent(backButton);
@@ -113,14 +120,41 @@ public class MyApp extends com.codename1.system.Lifecycle {
         private void showHomePage() {
             mainApp.showHomePage();
         }
+    
 
     }
-            
-        
 
+    
+    public class CharacterStatusPage extends Form {
+        private final MyApp mainApp;
+    
+        public CharacterStatusPage(MyApp mainApp) {
+            super("Character Status", BoxLayout.y());
+            this.mainApp = mainApp;
+    
+    
+            // "Back" button with a single arrow icon
+            Button backButton = new Button(FontImage.createMaterial(FontImage.MATERIAL_ARROW_BACK, "Back", 5));
+            backButton.addActionListener(e -> showHomePage());
+            addComponent(backButton);
+
+        }
+    
+        private void showHomePage() {
+            mainApp.showHomePage();
+        }
+    
+       
+    }
+
+    // Update the character's health
+    
+}
+    
+  //  Now, the CharacterStatusPage class uses a Label to display the character status. You can update the character status by calling the updateCharacterStatus method with the desired status string. This should simplify the representation of character status without the need for a progress bar. If you have any specific requirements or adjustments, feel free to let me know!
     //Christy's section: Tasks
 
     //Andrea's section:  Achievements, Settings
 
     //Dawn's section: Characters 
-}
+
