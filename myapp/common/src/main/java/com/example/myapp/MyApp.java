@@ -1,5 +1,7 @@
 package com.example.myapp;
 
+import java.lang.reflect.Method;
+
 import com.codename1.components.SpanLabel;
 import com.codename1.ui.Button;
 import com.codename1.ui.Component;
@@ -82,6 +84,7 @@ public class MyApp extends com.codename1.system.Lifecycle {
     public class HomePage extends Form {
 
         private final MyApp mainApp;
+        private CustomProgressBar customProgressBar;
 
         public HomePage(MyApp mainApp) {
             super("Home Page", BoxLayout.y());
@@ -94,8 +97,24 @@ public class MyApp extends com.codename1.system.Lifecycle {
             getToolbar().addCommandToSideMenu("Weekly Summary", null, e -> showWeeklySummary());
             getToolbar().addCommandToSideMenu("Settings", null, e -> showTab("Settings"));
             getToolbar().addCommandToSideMenu("Logout", null, e -> logout());
-        }
 
+            // Add the custom progress bar at the bottom
+            customProgressBar = new CustomProgressBar();
+            //customProgressBar.setProgress(0.75f); // Set an initial progress value (change as needed)
+            customProgressBar.setPadding(100, 0, 0, 0);
+            add(BorderLayout.south(customProgressBar));
+        }
+        public void updateProgressBar(float progress) {
+            customProgressBar.setProgress(progress);
+        }
+        
+        // Method to update the progress bar value
+        public void setCustomProgressBarValue(float value) {
+            if (customProgressBar != null) {
+                customProgressBar.setProgress(value);
+            }
+        }
+    
         private void showTab(String tabName) {
             if ("Settings".equals(tabName)) {
                 showSettingsPage();
