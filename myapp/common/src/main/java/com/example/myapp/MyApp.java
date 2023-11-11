@@ -100,8 +100,7 @@ public class MyApp extends com.codename1.system.Lifecycle {
 
             // Add the custom progress bar at the bottom
             customProgressBar = new CustomProgressBar();
-            //customProgressBar.setProgress(0.75f); // Set an initial progress value (change as needed)
-            customProgressBar.setPadding(100, 0, 0, 0);
+            customProgressBar.setProgress(0.75f); // Set an initial progress value (change as needed)
             add(BorderLayout.south(customProgressBar));
         }
         public void updateProgressBar(float progress) {
