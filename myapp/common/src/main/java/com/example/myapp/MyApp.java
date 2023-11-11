@@ -396,8 +396,8 @@ public class MyApp extends com.codename1.system.Lifecycle {
                 add(createSpacer());
             }
     
-            // Add a back button to return to the previous form
-            getToolbar().setBackCommand("Back", e -> showPreviousForm());
+            // Set the back command to return to the previous form
+            getToolbar().setBackCommand("Back", e -> showBack());
         }
     
         private Style createDayLabelStyle() {
@@ -426,10 +426,12 @@ public class MyApp extends com.codename1.system.Lifecycle {
             spacerStyle.setBgTransparency(255);
             return spacerStyle;
         }
-    
-        private void showPreviousForm() {
-            showBack();
+        private void goToPreviousPage() {
+            if (previousForm != null) {
+                previousForm.showBack();
+            }
         }
+    
     }
     
     
