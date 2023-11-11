@@ -1,12 +1,17 @@
 package com.example.myapp;
+import java.sql.Time;
+import java.time.LocalTime;
+import java.util.Date;
 
 import com.codename1.ui.Button;
 import com.codename1.ui.Dialog;
 import com.codename1.ui.FontImage;
 import com.codename1.ui.Form;
+import com.codename1.ui.Label;
 import com.codename1.ui.TextComponent;
 import com.codename1.ui.TextComponentPassword;
 import com.codename1.ui.layouts.BoxLayout;
+import com.codename1.ui.PickerComponent;
 
 public class MyApp extends com.codename1.system.Lifecycle {
     private Form signInForm;
@@ -57,6 +62,11 @@ public class MyApp extends com.codename1.system.Lifecycle {
         signInForm.showBack();
     }
 
+    public void showTaskOverviewPage(){
+        TaskOverviewPage tovp = new TaskOverviewPage(this);
+        tovp.show();
+    }
+
     public class HomePage extends Form {
 
         private final MyApp mainApp;
@@ -65,6 +75,7 @@ public class MyApp extends com.codename1.system.Lifecycle {
             super("Home Page", BoxLayout.y());
             this.mainApp = mainApp;
 
+            getToolbar().addCommandToSideMenu("Tasks", null, e -> showTaskOverviewPage());
             getToolbar().addCommandToSideMenu("Tasks", null, e -> showTab("Tasks"));
             getToolbar().addCommandToSideMenu("Character Selection", null, e -> showCharacterSelection());
             getToolbar().addCommandToSideMenu("Character Selection", null, e -> showTab("Character Selection"));
@@ -84,7 +95,12 @@ public class MyApp extends com.codename1.system.Lifecycle {
 
         private void showCharacterSelection(){
             CharacterSelectionPage characterSelectionPage = new CharacterSelectionPage();
-            characterSelectionPage.show(); 
+            characterSelectionPage.show();
+        }
+
+        private void showTaskOverviewPage() {
+            TaskOverviewPage taskOverviewPage = new TaskOverviewPage(mainApp);
+            taskOverviewPage.show();
         }
     }
 
@@ -97,6 +113,72 @@ public class MyApp extends com.codename1.system.Lifecycle {
     }
 
     //Christy's section: Tasks
+    public class TaskOverviewPage extends Form {
+        // public Form TOverview;
+        private final MyApp OverviewApp;
+
+        public TaskOverviewPage(MyApp OverviewApp) {
+            super("Task Overview", BoxLayout.y());
+            this.OverviewApp = OverviewApp;
+
+            // Add components and logic for the task overview page here
+            // For example, you can add labels, buttons, etc.
+            
+            // Sample label
+            Label label = new Label("No Tasks");
+            
+            // Button
+            Button addTaskButton = new Button("Add Task");
+            addTaskButton.addActionListener(e->showCreateTaskPage());
+
+            // adding to the Form
+            add(label);
+            add(addTaskButton);
+
+            // Sample button
+            // Button backButton = new Button("Back to Home");
+            // backButton.addActionListener(e -> backToHome());
+            // add(backButton);
+        }
+
+        private void showCreateTaskPage(){
+            CreateTaskPage createTaskPage = new CreateTaskPage(OverviewApp);
+            createTaskPage.show();
+        }
+    }
+
+    public class CreateTaskPage extends Form {
+        private final MyApp taskApp;
+    
+        public CreateTaskPage(MyApp taskApp){
+            super("Create Your Task", BoxLayout.y());
+            this.taskApp = taskApp;
+
+            //add character selection page components and logic here
+            TextComponent TaskName = new TextComponent().label("Task Name");
+            
+            int min = 0;
+            // int hour = 2;
+            PickerComponent DueDate = PickerComponent.createTime(min).label("Due Time");
+
+            // back button
+            Button backToOverviewButton = new Button("Back to Tasks");
+            
+            // HomePage hp = new HomePage(mainApp);
+            backToOverviewButton.addActionListener(e ->showTaskOverviewPage());
+
+            add(TaskName);
+            add(DueDate);
+            add(backToOverviewButton);
+        }
+
+        private void showTaskOverviewPage(){
+            taskApp.showTaskOverviewPage();
+        }
+
+
+        
+    }
 
     //Andrea's section:  Achievements, Settings
 
