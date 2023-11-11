@@ -113,19 +113,19 @@ public class MyApp extends com.codename1.system.Lifecycle {
     public class SettingsPage extends Form {
 
         private Form previousForm;
-
+    
         public SettingsPage() {
             super("Settings", BoxLayout.y());
-
+    
             addButton("Account", () -> showSettingsPage(new AccountSettingsPage(this)));
             addButton("Privacy", () -> showSettingsPage(new PrivacySettingsPage(this)));
             addButton("Notification", () -> showSettingsPage(new NotificationSettingsPage(this)));
             addButton("Contact Support", () -> showSettingsPage(new ContactSupportPage(this)));
             addButton("Rate Us", () -> showSettingsPage(new RateUsPage(this)));
-
+    
             // Add separation between buttons
             addAll(addSeparation(), getButtonsContainer(), addSeparation());
-
+    
             // Add a back button to return to the previous form
             Button backButton = new Button("Back");
             backButton.addActionListener(e -> goToPreviousPage());
@@ -135,7 +135,10 @@ public class MyApp extends com.codename1.system.Lifecycle {
         private void addButton(String label, Runnable action) {
             Button button = new Button(label);
             button.addActionListener(e -> action.run());
-            getButtonsContainer().add(button);
+            add(button);
+    
+            // Debug statement
+            System.out.println("Button added: " + label);
         }
     
         private Container addSeparation() {
@@ -160,7 +163,7 @@ public class MyApp extends com.codename1.system.Lifecycle {
             }
         }
     }
-
+    
     // AccountSettingsPage
     public class AccountSettingsPage extends Form {
 
