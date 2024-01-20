@@ -49,6 +49,7 @@ import com.codename1.ui.Image;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
 
+
 public class MyApp extends com.codename1.system.Lifecycle {
     private Form signInForm;
 
@@ -73,7 +74,7 @@ public class MyApp extends com.codename1.system.Lifecycle {
         signInForm.add(signInButton);
         signInButton.addActionListener(e -> signIn(usernameCaption.getText(), passwordField.getText()));
 
-        signInForm.getToolbar().addMaterialCommandToSideMenu("Hello Command", FontImage.MATERIAL_CHECK, 4, e -> hello());
+        signInForm.getToolbar().addMaterialCommandToSideMenu("DO-DIE Sign In Page", FontImage.MATERIAL_CHECK, 4, e -> hello());
         signInForm.show();
 
     }
@@ -117,6 +118,13 @@ public class MyApp extends com.codename1.system.Lifecycle {
         public HomePage(MyApp mainApp) {
             super("Home Page", BoxLayout.y());
             this.mainApp = mainApp;
+
+            // Create an icon
+            Image homeIcon = FontImage.createMaterial(FontImage.MATERIAL_HOME, new Style());
+            Label homeIconLabel = new Label(homeIcon);
+        
+            // Add the icon to the HomePage
+            this.add(homeIconLabel);
 
             getToolbar().addCommandToSideMenu("Tasks", null, e -> showTaskOverview());
             getToolbar().addCommandToSideMenu("Character Selection", null, e -> showCharacterSelection());
@@ -648,12 +656,14 @@ public class MyApp extends com.codename1.system.Lifecycle {
             this.previousForm = previousForm;
 
             // Add contact support components and logic here
+            Label contactLabel = new Label("Contact Us:");
+            Label phoneNumberLabel = new Label("Phone: +1 (555) 123-4567");
 
             Button goToPreviousPageButton = new Button("Go to Previous Page");
             goToPreviousPageButton.addActionListener(e -> goToPreviousPage());
 
             Container contentContainer = new Container(BoxLayout.y());
-            contentContainer.add(new SpanLabel("Contact support content goes here"));
+            contentContainer.addAll(contactLabel, phoneNumberLabel);
 
             add(contentContainer);
             add(goToPreviousPageButton);
