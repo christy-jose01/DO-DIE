@@ -4,9 +4,12 @@ package com.example.myapp;
 import javax.swing.Box;
 
 import com.codename1.components.SpanLabel;
+import com.codename1.io.JSONParser;
+import com.codename1.io.Storage;
 import com.codename1.ui.Button;
 import com.codename1.ui.Container;
 import com.codename1.ui.Dialog;
+import com.codename1.ui.Display;
 import com.codename1.ui.Font;
 import com.codename1.ui.FontImage;
 import com.codename1.ui.Form;
@@ -26,6 +29,25 @@ import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.plaf.Border;
 import com.codename1.ui.plaf.Style;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+//Import for swiftUI translated functions
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TimerTask;
+import java.util.prefs.Preferences;
+import com.codename1.l10n.SimpleDateFormat;
+
+import com.codename1.ui.Display;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import com.codename1.ui.EncodedImage;
+import com.codename1.ui.Image;
+import com.codename1.ui.layouts.BorderLayout;
+import com.codename1.ui.layouts.BoxLayout;
 
 public class MyApp extends com.codename1.system.Lifecycle {
     private Form signInForm;
@@ -53,6 +75,7 @@ public class MyApp extends com.codename1.system.Lifecycle {
 
         signInForm.getToolbar().addMaterialCommandToSideMenu("Hello Command", FontImage.MATERIAL_CHECK, 4, e -> hello());
         signInForm.show();
+
     }
 
     private void signIn(String username, String password) {
@@ -102,7 +125,7 @@ public class MyApp extends com.codename1.system.Lifecycle {
             getToolbar().addCommandToSideMenu("Character Status", null, e -> showCharacterStatus());
             getToolbar().addCommandToSideMenu("Achievements", null, e -> showTab("Achievements"));
         //    getToolbar().addCommandToSideMenu("Character Selection", null, e -> showTab("Character Selection"));
-            getToolbar().addCommandToSideMenu("Character Status", null, e -> showTab("Character Status"));
+            // getToolbar().addCommandToSideMenu("Character Status", null, e -> showTab("Character Status"));
             getToolbar().addCommandToSideMenu("Weekly Summary", null, e -> showWeeklySummary());
             getToolbar().addCommandToSideMenu("Settings", null, e -> showTab("Settings"));
             getToolbar().addCommandToSideMenu("Logout", null, e -> logout());
@@ -148,18 +171,15 @@ public class MyApp extends com.codename1.system.Lifecycle {
             mainApp.showSignInForm();
         }
 
-
-        private void showCharacterSelection() {
-            CharacterSelectionPage characterSelectionPage = new CharacterSelectionPage(mainApp);
-            characterSelectionPage.show();
-        }
-
         private void showCharacterStatus() {
             CharacterStatusPage characterStatusPage = new CharacterStatusPage(mainApp);
             characterStatusPage.show();
         }
 
-
+        private void showCharacterSelection(){
+            CharacterSelectionPage charSelectPage = new CharacterSelectionPage(mainApp);
+            charSelectPage.show();
+        }
         
         
     }
@@ -252,27 +272,221 @@ public class MyApp extends com.codename1.system.Lifecycle {
 
     }
 
+        
+
+
+    
+
+    //pet class
+    public class Pet {
+        private String name;
+        private Date birthday;
+        private Date lastMeal;
+        private Date lastDrink;
+    
+        public Pet(Date lastMeal, Date lastDrink) {
+            this.name = "Yoshi";
+            this.birthday = new Date();
+            this.lastMeal = lastMeal;
+            this.lastDrink = lastDrink;
+        }
+    
+        public int getAge() {
+            long timeSince = calcTimeSince(birthday);
+            return (int) timeSince;
+        }
+    
+        public boolean isAboutToDie() {
+            long timeThreshold = 259200; // 3 days in seconds
+            long timeSinceLastMeal = new Date().getTime() - lastMeal.getTime();
+            long timeSinceLastDrink = new Date().getTime() - lastDrink.getTime();
+            return timeSinceLastMeal >= timeThreshold && timeSinceLastDrink >= timeThreshold;
+        }
+    
+        public String getHappinessLevel() {
+            String hunger = getHunger();
+            String thirst = getThirst();
+            return (hunger.equals("Hungry") || thirst.equals("Thirsty")) ? "Unhappy" : "Happy";
+        }
+
+        private long calcTimeSince(Date data) {
+            long seconds = (long) (-data.getTime() + new Date().getTime()) / 1000;
+            return seconds;
+        }
+
+        public String getHunger() {
+            long timeSince = calcTimeSince(lastMeal);
+            String string = "";
+            if (timeSince >= 0 && timeSince < 3) {
+                string = "Satisfied";
+            } else if (timeSince >= 3 && timeSince < 6) {
+                string = "Getting hungry...";
+            } else if (timeSince >= 6) {
+                string = "Hungry";
+            } else if (timeSince <= 10) {
+                string = "Dying";
+            } else {
+                string = "IDK";
+            }
+            return string;
+        }
+    
+        public String getThirst() {
+            long timeSince = calcTimeSince(lastDrink);
+            String string = "";
+            if (timeSince >= 0 && timeSince < 30) {
+                string = "Satisfied";
+            } else if (timeSince >= 30 && timeSince < 60) {
+                string = "Getting thirsty...";
+            } else if (timeSince >= 60) {
+                string = "Thirsty";
+            } else if (timeSince <= 259200) {
+                string = "Dying";
+            } else {
+                string = "IDK";
+            }
+            return string;
+        }
+
+        public Date getLastMeal() {
+            return lastMeal;
+        }
+    
+        public Date getLastDrink() {
+            return lastDrink;
+        }
+    }
+    
+
+    //Pet Repository that helps with storing data
+    public class PetRepository {
+
+        private static final String PET_KEY = "PET_KEY";
+        private Pet pet;
+    
+        public PetRepository() {
+            String petData = (String) Storage.getInstance().readObject(PET_KEY);
+            if (petData != null) {
+                this.pet = parsePetFromString(petData);
+                System.out.println("Pet data successfully retrieved!");
+            } else {
+                this.pet = new Pet(new Date(), new Date());
+            }
+        }
+    
+        public Pet loadData() {
+            return this.pet;
+        }
+    
+        public void saveData(Pet pet) {
+            String petData = convertPetToString(pet);
+            Storage.getInstance().writeObject(PET_KEY, petData);
+            System.out.println("Data saved at: " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        }
+    
+        public void clearData() {
+            Storage.getInstance().deleteStorageFile(PET_KEY);
+            System.out.println("Data cleared at: " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        }
+    
+        private String convertPetToString(Pet pet) {
+            // Convert Pet data to a string representation
+            // Example: "lastMeal=1642684800000&lastDrink=1642684800000"
+            return "lastMeal=" + pet.getLastMeal().getTime() +
+                   "&lastDrink=" + pet.getLastDrink().getTime();
+        }
+    
+        private Pet parsePetFromString(String petData) {
+            try {
+                // Split the string into key-value pairs
+                String[] pairs = petData.split("&");
+                long lastMeal = Long.parseLong(pairs[0].split("=")[1]);
+                long lastDrink = Long.parseLong(pairs[1].split("=")[1]);
+    
+                return new Pet(new Date(lastMeal), new Date(lastDrink));
+            } catch (NumberFormatException | ArrayIndexOutOfBoundsException ex) {
+                ex.printStackTrace();
+            }
+            return null;
+        }
+    }
+
+    
     
     public class CharacterStatusPage extends Form {
-        private final MyApp mainApp;
-    
-        public CharacterStatusPage(MyApp mainApp) {
-            super("Character Status", BoxLayout.y());
-            this.mainApp = mainApp;
-    
-    
-            // "Back" button with a single arrow icon
-            Button backButton = new Button(FontImage.createMaterial(FontImage.MATERIAL_ARROW_BACK, "Back", 5));
-            backButton.addActionListener(e -> showHomePage());
-            addComponent(backButton);
+    private final MyApp mainApp;
+    private Pet pet;
 
-        }
-    
-        private void showHomePage() {
-            mainApp.showHomePage();
-        }
-    
+    private Label ageLabel;
+    private Label healthLabel;
+    private Label happinessLabel;
+
+    public CharacterStatusPage(MyApp mainApp) {
+        super("Character Status", BoxLayout.y());
+        this.mainApp = mainApp;
+
+        // Initialize the Pet
+        pet = new Pet(new Date(), new Date());
+
+        // "Back" button with a single arrow icon
+        Button backButton = new Button(FontImage.createMaterial(FontImage.MATERIAL_ARROW_BACK, "Back", 5));
+        backButton.addActionListener(e -> showHomePage());
+        addComponent(backButton);
+
+        // Example: Add a button to feed the pet
+        Button feedButton = new Button("Feed");
+        //feedButton.addActionListener(e -> showTaskPage());
+        addComponent(feedButton);
+
+        // Labels to display pet information
+        ageLabel = new Label("Age: ");
+        addComponent(ageLabel);
+
+        healthLabel = new Label("Health: ");
+        addComponent(healthLabel);
+
+        happinessLabel = new Label("Happiness: ");
+        addComponent(happinessLabel);
+
+        // Add other UI components or actions as needed
+        // ...
+
+        // Initialize the UI
+        updateUI();
+
+        // Set up a timer to update UI every second
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                updateUI();
+            }
+        }, 0, 1000); // Update every second
     }
+
+    private void showHomePage() {
+        mainApp.showHomePage();
+    }
+
+    private void updateUI() {
+        // Update UI elements based on pet's status
+        int ageInSeconds = pet.getAge();
+        String health = pet.getHunger(); // Assuming you have a getHealth() method in Pet class
+        String happinessLevel = pet.getHappinessLevel();
+    
+        // Update UI components accordingly
+        Display.getInstance().callSerially(() -> {
+            ageLabel.setText("Age: " + ageInSeconds + " seconds");
+            healthLabel.setText("Health: " + health);
+            happinessLabel.setText("Happiness: " + happinessLevel);
+                });
+        }
+    }
+    
+    
+    
+    
+    
 
     // Update the character's health
     
