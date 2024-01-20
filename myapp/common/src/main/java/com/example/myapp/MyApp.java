@@ -1,6 +1,8 @@
 
 package com.example.myapp;
 
+import javax.swing.Box;
+
 import com.codename1.components.SpanLabel;
 import com.codename1.ui.Button;
 import com.codename1.ui.Container;
@@ -16,6 +18,7 @@ import com.codename1.ui.Graphics;
 
 // Import for Label
 import com.codename1.ui.Label;
+import com.codename1.ui.PickerComponent;
 import com.codename1.ui.TextComponent;
 import com.codename1.ui.TextComponentPassword;
 import com.codename1.ui.geom.Dimension;
@@ -78,6 +81,11 @@ public class MyApp extends com.codename1.system.Lifecycle {
         homePage.show();
     }
 
+    public void showTaskOverview(){
+        TasksOverviewPage tasksOverviewPage = new TasksOverviewPage(this);
+        tasksOverviewPage.show();
+    }
+
     public class HomePage extends Form {
 
         private final MyApp mainApp;
@@ -87,7 +95,7 @@ public class MyApp extends com.codename1.system.Lifecycle {
             super("Home Page", BoxLayout.y());
             this.mainApp = mainApp;
 
-            getToolbar().addCommandToSideMenu("Tasks", null, e -> showTab("Tasks"));
+            getToolbar().addCommandToSideMenu("Tasks", null, e -> showTaskOverview());
             getToolbar().addCommandToSideMenu("Character Selection", null, e -> showCharacterSelection());
           //  getToolbar().addCommandToSideMenu("Character Selection", null, e -> showTab("Character Selection"));
           //  getToolbar().addCommandToSideMenu("Character Status", null, e -> showTab("Character Status"));
@@ -104,6 +112,8 @@ public class MyApp extends com.codename1.system.Lifecycle {
             customProgressBar.setProgress(0.75f); // Set an initial progress value (change as needed)
             add(BorderLayout.south(customProgressBar));
         }
+
+
         public void updateProgressBar(float progress) {
             customProgressBar.setProgress(progress);
         }
@@ -147,13 +157,79 @@ public class MyApp extends com.codename1.system.Lifecycle {
         private void showCharacterStatus() {
             CharacterStatusPage characterStatusPage = new CharacterStatusPage(mainApp);
             characterStatusPage.show();
-        
+        }
 
-        
+
         
         
     }
 
+    public class TasksOverviewPage extends Form{
+        private final MyApp mainApp;
+
+        public TasksOverviewPage(MyApp mainApp){
+            super("Tasks Overview", BoxLayout.y());
+            this.mainApp = mainApp;
+
+            // Sample label
+            Label label = new Label("No Tasks");
+            
+            // Buttons
+            // go back
+            Button backButton = new Button("Back to Homepage");
+            backButton.addActionListener(e->showHomePage());
+
+            // add task
+            Button addTaskButton = new Button("Add Task");
+            addTaskButton.addActionListener(e->showCreateTaskPage());
+
+            // adding to the Form
+            add(label);
+            add(addTaskButton);
+            add(backButton);
+        }
+
+        private void showCreateTaskPage(){
+            CreateTaskPage createTaskPage = new CreateTaskPage(mainApp);
+            createTaskPage.show();
+        }
+
+
+    }
+
+    public class CreateTaskPage extends Form {
+        private final MyApp mainApp;
+    
+        public CreateTaskPage(MyApp mainApp){
+            super("Create Your Task", BoxLayout.y());
+            this.mainApp = mainApp;
+
+            //add character selection page components and logic here
+            TextComponent TaskName = new TextComponent().label("Task Name");
+            
+            int min = 0;
+            // int hour = 2;
+            PickerComponent DueDate = PickerComponent.createTime(min).label("Due Time");
+
+            // back button
+            Button backToOverviewButton = new Button("Back to Tasks");
+            
+            // HomePage hp = new HomePage(mainApp);
+            backToOverviewButton.addActionListener(e ->showTaskOverview());
+
+            add(TaskName);
+            add(DueDate);
+            add(backToOverviewButton);
+        }
+
+        private void showTaskOverview(){
+            mainApp.showTaskOverview();
+        }
+
+
+        
+    }
+    
     public class CharacterSelectionPage extends Form {
         private final MyApp mainApp;
 
@@ -168,6 +244,7 @@ public class MyApp extends com.codename1.system.Lifecycle {
             addComponent(backButton);
             
         }
+
         private void showHomePage() {
             mainApp.showHomePage();
         }
@@ -195,12 +272,11 @@ public class MyApp extends com.codename1.system.Lifecycle {
             mainApp.showHomePage();
         }
     
-       
     }
 
     // Update the character's health
     
-}
+
     
   //  Now, the CharacterStatusPage class uses a Label to display the character status. You can update the character status by calling the updateCharacterStatus method with the desired status string. This should simplify the representation of character status without the need for a progress bar. If you have any specific requirements or adjustments, feel free to let me know!
     public interface PreviousFormSetter {
@@ -514,6 +590,6 @@ public class MyApp extends com.codename1.system.Lifecycle {
 
     //Andrea's section:  Achievements, Settings
 
-    //Dawn's section: Characters 
+    //Dawn's section: Characters
 
 }

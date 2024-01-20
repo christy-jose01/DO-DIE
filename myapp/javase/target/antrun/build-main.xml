@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="maven-antrun-" default="main">
+  <target name="main">
+    <mkdir dir="C:\Users\chris\Documents\do-diee\DO-DIE\myapp\javase\target/myapp-javase-1.0-SNAPSHOT" />
+    <mkdir dir="C:\Users\chris\Documents\do-diee\DO-DIE\myapp\javase\target/myapp-javase-1.0-SNAPSHOT/libs" />
+    <copy todir="C:\Users\chris\Documents\do-diee\DO-DIE\myapp\javase\target/myapp-javase-1.0-SNAPSHOT/libs">
+      <fileset dir="C:\Users\chris\Documents\do-diee\DO-DIE\myapp\javase\target/libs" />
+    </copy>
+    <copy file="C:\Users\chris\Documents\do-diee\DO-DIE\myapp\javase\target/myapp-javase-1.0-SNAPSHOT.jar" todir="C:\Users\chris\Documents\do-diee\DO-DIE\myapp\javase\target/myapp-javase-1.0-SNAPSHOT" />
+    <zip basedir="C:\Users\chris\Documents\do-diee\DO-DIE\myapp\javase\target/myapp-javase-1.0-SNAPSHOT" destfile="C:\Users\chris\Documents\do-diee\DO-DIE\myapp\javase\target/myapp-javase-1.0-SNAPSHOT.zip" includes="**"></zip>
+  </target>
+</project>
