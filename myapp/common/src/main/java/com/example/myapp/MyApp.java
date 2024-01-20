@@ -1,8 +1,6 @@
 
 package com.example.myapp;
 
-import javax.swing.Box;
-
 import com.codename1.components.SpanLabel;
 import com.codename1.ui.Button;
 import com.codename1.ui.Container;
@@ -10,6 +8,9 @@ import com.codename1.ui.Dialog;
 import com.codename1.ui.Font;
 import com.codename1.ui.FontImage;
 import com.codename1.ui.Form;
+import com.codename1.ui.Image;
+import java.io.IOException;
+
 //import com.codename1.ui.ProgressBar;
 import com.codename1.ui.Graphics;
 
@@ -18,7 +19,6 @@ import com.codename1.ui.Graphics;
 
 // Import for Label
 import com.codename1.ui.Label;
-import com.codename1.ui.PickerComponent;
 import com.codename1.ui.TextComponent;
 import com.codename1.ui.TextComponentPassword;
 import com.codename1.ui.geom.Dimension;
@@ -27,12 +27,36 @@ import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.plaf.Border;
 import com.codename1.ui.plaf.Style;
 
+import com.codename1.ui.Component;
+import com.codename1.ui.Graphics;
+import com.codename1.ui.geom.Dimension;
+import com.codename1.ui.Display;
+
+
+
 public class MyApp extends com.codename1.system.Lifecycle {
     private Form signInForm;
 
     @Override
     public void runApp() {
-        signInForm = new Form("Sign in", BoxLayout.y());
+        signInForm = new Form("Sign in", new BoxLayout(BoxLayout.Y_AXIS));
+
+        // Load the image from a file
+        String imagePath = "theme://yoshi.png"; // Replace with your image's resource path
+        Image image = null;
+        try {
+            image = Image.createImage(imagePath); // Replace "image.jpg" with your image file's path
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (image != null) {
+        // Create a Label to display the image
+            Container imageContainer = new Container(new BorderLayout());
+            imageContainer.add(BorderLayout.CENTER, new Label(image));   
+            signInForm.add(imageContainer);         
+        }
+
 
         TextComponent usernameCaption = new TextComponent();
         usernameCaption.label("username");
@@ -47,11 +71,12 @@ public class MyApp extends com.codename1.system.Lifecycle {
         signInForm.add(passwordField);
        // signInForm.add(passwordSpace);
 
+
         Button signInButton = new Button("Sign in");
         signInForm.add(signInButton);
         signInButton.addActionListener(e -> signIn(usernameCaption.getText(), passwordField.getText()));
 
-        signInForm.getToolbar().addMaterialCommandToSideMenu("Hello Command", FontImage.MATERIAL_CHECK, 4, e -> hello());
+        signInForm.getToolbar().addMaterialCommandToSideMenu("DO-DIE Sign In Page", FontImage.MATERIAL_CHECK, 4, e -> hello());
         signInForm.show();
     }
 
@@ -81,11 +106,6 @@ public class MyApp extends com.codename1.system.Lifecycle {
         homePage.show();
     }
 
-    public void showTaskOverview(){
-        TasksOverviewPage tasksOverviewPage = new TasksOverviewPage(this);
-        tasksOverviewPage.show();
-    }
-
     public class HomePage extends Form {
 
         private final MyApp mainApp;
@@ -95,7 +115,7 @@ public class MyApp extends com.codename1.system.Lifecycle {
             super("Home Page", BoxLayout.y());
             this.mainApp = mainApp;
 
-            getToolbar().addCommandToSideMenu("Tasks", null, e -> showTaskOverview());
+            getToolbar().addCommandToSideMenu("Tasks", null, e -> showTab("Tasks"));
             getToolbar().addCommandToSideMenu("Character Selection", null, e -> showCharacterSelection());
           //  getToolbar().addCommandToSideMenu("Character Selection", null, e -> showTab("Character Selection"));
           //  getToolbar().addCommandToSideMenu("Character Status", null, e -> showTab("Character Status"));
@@ -112,8 +132,6 @@ public class MyApp extends com.codename1.system.Lifecycle {
             customProgressBar.setProgress(0.75f); // Set an initial progress value (change as needed)
             add(BorderLayout.south(customProgressBar));
         }
-
-
         public void updateProgressBar(float progress) {
             customProgressBar.setProgress(progress);
         }
@@ -157,79 +175,13 @@ public class MyApp extends com.codename1.system.Lifecycle {
         private void showCharacterStatus() {
             CharacterStatusPage characterStatusPage = new CharacterStatusPage(mainApp);
             characterStatusPage.show();
-        }
-
+        
 
         
         
-    }
-
-    public class TasksOverviewPage extends Form{
-        private final MyApp mainApp;
-
-        public TasksOverviewPage(MyApp mainApp){
-            super("Tasks Overview", BoxLayout.y());
-            this.mainApp = mainApp;
-
-            // Sample label
-            Label label = new Label("No Tasks");
-            
-            // Buttons
-            // go back
-            Button backButton = new Button("Back to Homepage");
-            backButton.addActionListener(e->showHomePage());
-
-            // add task
-            Button addTaskButton = new Button("Add Task");
-            addTaskButton.addActionListener(e->showCreateTaskPage());
-
-            // adding to the Form
-            add(label);
-            add(addTaskButton);
-            add(backButton);
-        }
-
-        private void showCreateTaskPage(){
-            CreateTaskPage createTaskPage = new CreateTaskPage(mainApp);
-            createTaskPage.show();
-        }
-
-
-    }
-
-    public class CreateTaskPage extends Form {
-        private final MyApp mainApp;
-    
-        public CreateTaskPage(MyApp mainApp){
-            super("Create Your Task", BoxLayout.y());
-            this.mainApp = mainApp;
-
-            //add character selection page components and logic here
-            TextComponent TaskName = new TextComponent().label("Task Name");
-            
-            int min = 0;
-            // int hour = 2;
-            PickerComponent DueDate = PickerComponent.createTime(min).label("Due Time");
-
-            // back button
-            Button backToOverviewButton = new Button("Back to Tasks");
-            
-            // HomePage hp = new HomePage(mainApp);
-            backToOverviewButton.addActionListener(e ->showTaskOverview());
-
-            add(TaskName);
-            add(DueDate);
-            add(backToOverviewButton);
-        }
-
-        private void showTaskOverview(){
-            mainApp.showTaskOverview();
-        }
-
-
         
     }
-    
+
     public class CharacterSelectionPage extends Form {
         private final MyApp mainApp;
 
@@ -244,7 +196,6 @@ public class MyApp extends com.codename1.system.Lifecycle {
             addComponent(backButton);
             
         }
-
         private void showHomePage() {
             mainApp.showHomePage();
         }
@@ -272,11 +223,12 @@ public class MyApp extends com.codename1.system.Lifecycle {
             mainApp.showHomePage();
         }
     
+       
     }
 
     // Update the character's health
     
-
+}
     
   //  Now, the CharacterStatusPage class uses a Label to display the character status. You can update the character status by calling the updateCharacterStatus method with the desired status string. This should simplify the representation of character status without the need for a progress bar. If you have any specific requirements or adjustments, feel free to let me know!
     public interface PreviousFormSetter {
@@ -590,6 +542,6 @@ public class MyApp extends com.codename1.system.Lifecycle {
 
     //Andrea's section:  Achievements, Settings
 
-    //Dawn's section: Characters
+    //Dawn's section: Characters 
 
 }
