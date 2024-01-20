@@ -1,0 +1,82 @@
+/** Define Theme Constants here */
+
+#Constants {
+    includeNativeBool: true;
+    defaultSourceDPIInt: "0";
+}
+
+TitleArea {
+    border:none;
+    background-color:rgb(255, 160, 169);
+    padding: 2mm 10mm;
+    margin:0;
+}
+
+@font-face {
+    font-family: 'icomoon';
+    src: url('fonts/icomoon.ttf');
+  }
+
+Form{
+    background-color:rgb(255, 160, 169);
+    margin:0;
+}
+
+/** Style for Button class */
+Button {
+    font-family: "native:MainLight";
+    font-size: 2.5mm;
+    border: 20px solid #ffffff; /* Adjust the color as needed */
+    border-radius: 20px; /* This creates the rounded corners */
+    padding: 2mm;
+    background-color: rgba(255, 160, 169, 1); 
+    color: rgb(255, 255, 255);
+}
+
+/** Style for App Title Bar Text */
+Title {
+    font-family: "Monospace";
+    font-size: 20mm;
+    color: rgb(255, 255, 255);
+}
+
+
+/** Style for Dialog body */
+DialogBody {
+    font-family: "native:MainLight";
+    font-size: 2.8mm;
+    background-color:rgb(255, 192, 192);
+}
+
+/** Style for Dialog title bar text */
+DialogTitle {
+    font-family: "native:MainLight";
+    background: rgb(255, 185, 185);
+    font-size: 4.5mm;
+}
+
+/** Style for the side menu */
+SideNavigationPanel {
+    color: rgb(255, 197, 197);    
+    padding: 2mm 1mm 1mm 1mm;
+}
+
+@media platform-ios {
+    /** iOS Only styles for side menu. */
+    SideNavigationPanel {
+        /** Extra top padding to deal with notch on iPhoneX */
+        padding: 6mm 1mm 1mm 1mm;
+    }
+}
+
+/** Style for commands in side menu. */
+SideCommand {
+    padding: 1mm;
+    border: none;
+    text-decoration: none;
+
+    color: rgb(255, 197, 197);
+    font-family: "Monospace";
+    font-size: 4mm;
+    border-bottom: 2px solid #ffffff;
+}
