@@ -93,16 +93,8 @@ public class MyApp extends com.codename1.system.Lifecycle {
 
     @Override
     public void runApp() {
+        signInForm = new Form("Sign in", BoxLayout.y());
 
-        signInForm = new Form("DO-DIE", BoxLayout.y());
-
-        Label spacer = new Label();
-        spacer.setPreferredH(Display.getInstance().convertToPixels(25)); // Adjust the height as needed
-
-        // Add the spacer and the container to the form
-        signInForm.add(spacer);
-
-    
         TextComponent usernameCaption = new TextComponent();
         usernameCaption.label("username");
         //TextArea usernameSpace = new TextArea();
@@ -120,48 +112,14 @@ public class MyApp extends com.codename1.system.Lifecycle {
         signInForm.add(signInButton);
         signInButton.addActionListener(e -> signIn(usernameCaption.getText(), passwordField.getText()));
 
-        //signInForm.getToolbar().addMaterialCommandToSideMenu("DO-DIE Sign In Page", FontImage.MATERIAL_CHECK, 4, e -> hello());
-        //signInForm.show();
-
-        // Adding "Forgot Password?" button at the bottom
-        Button forgotPasswordButton = new Button("Forgot Password?");
-        forgotPasswordButton.addActionListener(e -> {
-            Dialog forgotPasswordDialog = new Dialog("Reset Password");
-            forgotPasswordDialog.setLayout(new BorderLayout());
-
-            TextArea emailField = new TextArea(1, 20);
-            //TextArea feedbackArea = new TextArea(5, 20);
-            emailField.setHint("Enter your email");
-            //emailField.setPreferredW(Display.getInstance().getDisplayWidth() / 2); 
-            Button submitButton = new Button("Submit");
-            submitButton.addActionListener(submitEvent -> {
-                // Logic to handle the email submission
-                String email = emailField.getText();
-                // Here, you would typically call a method to handle the password reset request
-                // For example: resetPassword(email);
-                
-                // Show confirmation dialog
-                Dialog.show("Email Sent", "A password reset link has been sent to: " + email, "OK", null);
-
-                // Close the forgot password dialog
-                forgotPasswordDialog.dispose();
-        });
-            forgotPasswordDialog.add(BorderLayout.CENTER, emailField);
-            forgotPasswordDialog.add(BorderLayout.SOUTH, submitButton);
-
-            forgotPasswordDialog.show();
-
-        });
-        signInForm.add(forgotPasswordButton);
-
+        signInForm.getToolbar().addMaterialCommandToSideMenu("DO-DIE Sign In Page", FontImage.MATERIAL_CHECK, 4, e -> hello());
         signInForm.show();
 
     }
 
     private void signIn(String username, String password) {
         if (isValidCredentials(username, password)) {
-            HomePage homePage = new HomePage(this);
-            homePage.show();
+            showTaskOverview();
         } else {
             Dialog.show("Invalid Credentials", "Please check your username and password", "OK", null);
         }
@@ -261,7 +219,6 @@ public class MyApp extends com.codename1.system.Lifecycle {
         private Date birthday;
         private Date lastMeal;
         private Date lastDrink;
-        long appStartTime = System.currentTimeMillis();
     
         public Pet(Date lastMeal, Date lastDrink) {
             this.name = "Yoshi";
@@ -271,9 +228,8 @@ public class MyApp extends com.codename1.system.Lifecycle {
         }
     
         public int getAge() {
-            long elapsedTime = System.currentTimeMillis() - appStartTime;
-            long seconds = elapsedTime / 1000;
-            return (int) seconds;
+            long timeSince = calcTimeSince(birthday);
+            return (int) timeSince;
         }
     
         public boolean isAboutToDie() {
@@ -394,70 +350,72 @@ public class MyApp extends com.codename1.system.Lifecycle {
     
     
     public class CharacterStatusPage extends Form {
-        private final MyApp mainApp;
-        private Pet pet;
+    private final MyApp mainApp;
+    private Pet pet;
 
-        private Label ageLabel;
-        private Label healthLabel;
-        private Label happinessLabel;
+    private Label ageLabel;
+    private Label healthLabel;
+    private Label happinessLabel;
 
-        public CharacterStatusPage(MyApp mainApp) {
-            super("Character Status", BoxLayout.y());
-            this.mainApp = mainApp;
+    public CharacterStatusPage(MyApp mainApp) {
+        super("Character Status", BoxLayout.y());
+        this.mainApp = mainApp;
 
-            // Initialize the Pet
-            pet = new Pet(new Date(), new Date());
+        // Initialize the Pet
+        pet = new Pet(new Date(), new Date());
 
-            // "Back" button with a single arrow icon
-            Button backButton = new Button(FontImage.createMaterial(FontImage.MATERIAL_ARROW_BACK, "Back", 5));
-            backButton.addActionListener(e -> showHomePage());
-            addComponent(backButton);
+        // "Back" button with a single arrow icon
+        Button backButton = new Button(FontImage.createMaterial(FontImage.MATERIAL_ARROW_BACK, "Back", 5));
+        backButton.addActionListener(e -> showHomePage());
+        addComponent(backButton);
 
-            // Example: Add a button to feed the pet
-            Button feedButton = new Button("Feed");
-            feedButton.addActionListener(e -> showTaskOverview());
-            addComponent(feedButton);
+        // Example: Add a button to feed the pet
+        Button feedButton = new Button("Feed");
+        //feedButton.addActionListener(e -> showTaskPage());
+        addComponent(feedButton);
 
-            // Labels to display pet information
-            ageLabel = new Label("Age: ");
-            addComponent(ageLabel);
+        // Labels to display pet information
+        ageLabel = new Label("Age: ");
+        addComponent(ageLabel);
 
-            healthLabel = new Label("Health: ");
-            addComponent(healthLabel);
+        healthLabel = new Label("Health: ");
+        addComponent(healthLabel);
 
-            happinessLabel = new Label("Happiness: ");
-            addComponent(happinessLabel);
+        happinessLabel = new Label("Happiness: ");
+        addComponent(happinessLabel);
 
-            // Add other UI components or actions as needed
-            // ...
+        // Add other UI components or actions as needed
+        // ...
 
-            // Initialize the UI
-            updateUI();
+        // Initialize the UI
+        updateUI();
 
-            // Set up a timer to update UI every second
-            Timer timer = new Timer();
-            timer.scheduleAtFixedRate(new TimerTask() {
-                @Override
-                public void run() {
-                    updateUI();
-                }
-            }, 0, 1000); // Update every second
-        }
+        // Set up a timer to update UI every second
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                updateUI();
+            }
+        }, 0, 1000); // Update every second
+    }
 
-        private void showHomePage() {
-            mainApp.showHomePage();
-        }
+    private void showHomePage() {
+        mainApp.showHomePage();
+    }
 
-        private void updateUI() {
-            // Update UI elements based on pet's status
-            int ageInSeconds = pet.getAge();
-            String health = pet.getHunger(); // Assuming you have a getHealth() method in Pet class
-            String happinessLevel = pet.getHappinessLevel();
-        
-            // Update UI components accordingly
+    private void updateUI() {
+        // Update UI elements based on pet's status
+        int ageInSeconds = pet.getAge();
+        String health = pet.getHunger(); // Assuming you have a getHealth() method in Pet class
+        String happinessLevel = pet.getHappinessLevel();
+    
+        // Update UI components accordingly
+        Display.getInstance().callSerially(() -> {
             ageLabel.setText("Age: " + ageInSeconds + " seconds");
             healthLabel.setText("Health: " + health);
             happinessLabel.setText("Happiness: " + happinessLevel);
+                });
         }
     }
     
@@ -594,39 +552,10 @@ public class MyApp extends com.codename1.system.Lifecycle {
             goToPreviousPageButton.addActionListener(e -> goToPreviousPage());
 
             Container contentContainer = new Container(BoxLayout.y());
-            String privacyText = "Absolutely! It's always interesting to think about the vastness of the universe and how we, as humans, fit into it. We're on this relatively small planet, spinning around a ball of fiery gas, in a galaxy that's just one of billions. It's a humbling thought." +
-            "Then there's the marvel of human ingenuity. From the creation of simple tools and fire to modern technology like smartphones and space rockets, our journey has been incredible. We're constantly pushing the boundaries of what's possible, exploring new frontiers, both on Earth and beyond." +
-            "YAP YAP YAP YAP BLAH BLAH BLAH BLAH YAP YAP YAP YAP BLAH BLAH BLAH. If y'all notice this, you're attentive asf LOL. fascinating to consider the evolution of languages too. How they've grown, adapted, and morphed over thousands of years. Languages are like living, breathing entities," +
-            "constantly evolving with us. It's a testament to our need to communicate, to share ideas, and to connect with one another. And let's not forget about the little joys of everyday life, a freshly brewed cup of coffee, the smell of rain, a good book, or a heartwarming conversation with a friend." + 
-            "These simple pleasures add so much value to our lives, often more than never than we realize. Oh and also Andrea, Christy, and I slayed we da best team ever! It's these small moments that string together to form the tapestry of our lives. So you're basically signing your life away to this app (jk lol unless...)" +
-            "Sprinkle Sprinkle.";
-            
-            contentContainer.add(new SpanLabel(privacyText));
-
-            //CheckBox checkBox = new CheckBox(t.getTaskName());
-            //taskContainer.add(checkBox);
+            contentContainer.add(new SpanLabel("Privacy settings content goes here"));
 
             add(contentContainer);
-
-            Label spacer = new Label();
-            spacer.setPreferredH(Display.getInstance().convertToPixels(10)); // Adjust the height as needed
-
-            // Add the spacer and the container to the form
-            this.add(spacer);
-
-            // CheckBox with a label
-            CheckBox agreeCheckBox = new CheckBox("I agree to terms and conditions");
-            // Optionally, you can set the CheckBox to be initially unchecked
-            agreeCheckBox.setSelected(false);
-            contentContainer.add(agreeCheckBox); // Add the CheckBox to the container
-
             add(goToPreviousPageButton);
-
-            Label spacer1 = new Label();
-            spacer1.setPreferredH(Display.getInstance().convertToPixels(5)); // Adjust the height as needed
-
-            // Add the spacer and the container to the form
-            this.add(spacer1);
         }
 
         private void goToPreviousPage() {
@@ -787,25 +716,31 @@ public class MyApp extends com.codename1.system.Lifecycle {
             // Add the spacer and the container to the form
             this.add(spacer);
 
+            // Create the style for the icon
             Style s = new Style();
             s.setFont(FontImage.getMaterialDesignFont().derive(Display.getInstance().convertToPixels(30), Font.STYLE_PLAIN));
-            s.setFgColor(0xffa0a9); 
+
+            // Create the character icon
+            s.setFgColor(0xffa0a9); // Set the foreground color to red (in ARGB format)
             Image heartIcon = FontImage.createMaterial(FontImage.MATERIAL_FAVORITE, s);
 
+            // Use the icon in a button
             Label heartIconLabel = new Label(heartIcon);
+            // Set background color
             Style labelStyle = heartIconLabel.getAllStyles();
-            labelStyle.setBgColor(0xe89091); 
-            labelStyle.setBgTransparency(255); 
+            labelStyle.setBgColor(0xe89091); // Green background color
+            labelStyle.setBgTransparency(255); // Opaque background
 
+            // Create a container with a centered layout for the icon
             Container centerContainer = new Container(new FlowLayout(Component.CENTER));
             centerContainer.add(heartIconLabel);
 
             this.add(centerContainer);
 
             Label spacer1 = new Label();
-            spacer1.setPreferredH(Display.getInstance().convertToPixels(10)); 
+            spacer1.setPreferredH(Display.getInstance().convertToPixels(10)); // Adjust the height as needed
 
-            
+            // Add the spacer and the container to the form
             this.add(spacer1);
 
             Button checkFeedbackButton = new Button("People love us!!");
@@ -821,11 +756,12 @@ public class MyApp extends com.codename1.system.Lifecycle {
             Button submitButton = new Button("Submit");
             submitButton.addActionListener(e -> {
                 String feedback = feedbackArea.getText();
-            
+            // Here, you can handle the feedback, like sending it to a server or email
+            // For now, let's just show a confirmation dialog
                 if(!feedback.isEmpty()) {
-                    saveFeedback(feedback); 
+                    saveFeedback(feedback); // Call the method to save feedback
                     Dialog.show("Thank You", "Your feedback has been received.", "OK", null);
-                    feedbackDialog.dispose(); 
+                    feedbackDialog.dispose(); // Close the dialog after submission
                 }
             });
         Button doneButton = new Button("Done");
@@ -850,9 +786,9 @@ public class MyApp extends com.codename1.system.Lifecycle {
         private float progress;
 
         public CustomProgressBar() {
-            this.progress = 0.5f; 
-            getAllStyles().setBgColor(0xFFFFFF); 
-            getAllStyles().setBorder(Border.createLineBorder(1, 0x000000)); 
+            this.progress = 0.5f; // Set the initial progress value
+            getAllStyles().setBgColor(0xFFFFFF); // Set the background color
+            getAllStyles().setBorder(Border.createLineBorder(1, 0x000000)); // Set the border color and size
         }
 
         public float getProgress() {
@@ -862,7 +798,7 @@ public class MyApp extends com.codename1.system.Lifecycle {
         public void setProgress(float progress) {
             if (progress >= 0 && progress <= 1) {
                 this.progress = progress;
-                repaint(); 
+                repaint(); // Trigger repaint to update the progress bar
             }
         }
 
@@ -870,16 +806,19 @@ public class MyApp extends com.codename1.system.Lifecycle {
         protected void paintBackground(Graphics g) {
             super.paintBackground(g);
 
+            // Calculate the width of the filled area based on the progress
             int fillWidth = (int) (getWidth() * progress);
-        
-            g.setColor(0x007AFF); 
-            
+
+            // Set the color of the filled area
+            g.setColor(0x007AFF); // You can customize the color here
+
+            // Draw the filled area
             g.fillRect(getX(), getY(), fillWidth, getHeight());
         }
 
         @Override
         protected Dimension calcPreferredSize() {
-            return new Dimension(260, 37); 
+            return new Dimension(260, 37); // Set the preferred size of your progress bar
         }
     }
 
@@ -891,19 +830,24 @@ public class MyApp extends com.codename1.system.Lifecycle {
             super("Weekly Summary", BoxLayout.y());
             this.previousForm = previousForm;
     
+            // Days of the week
             String[] days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
     
             for (String day : days) {
+                // Day label
                 Label dayLabel = new Label(day);
                 dayLabel.getAllStyles().merge(createDayLabelStyle());
                 add(dayLabel);
     
+                // Custom progress bar
                 CustomProgressBar customProgressBar = new CustomProgressBar();
                 add(customProgressBar);
     
+                // Spacing between days
                 add(createSpacer());
             }
     
+            // Set the back command to return to the previous form
             getToolbar().setBackCommand("Back", e -> goToPreviousPage());
         }
     
@@ -918,6 +862,8 @@ public class MyApp extends com.codename1.system.Lifecycle {
             dayLabelStyle.setBgColor(0xFFFFFF);
             dayLabelStyle.setFgColor(0x000000);
             dayLabelStyle.setBorder(Border.createLineBorder(1, 0x000000));
+            //dayLabelStyle.setFont(Font.createTrueTypeFont("Inter", "Inter-Regular.ttf", Font.STYLE_PLAIN, 20));
+            //dayLabelStyle.setFont(Font.createTrueTypeFont("Inter", "Inter-Regular.ttf").derive(Font.STYLE_PLAIN, 20));
             dayLabelStyle.setFont(Font.createSystemFont(Font.FACE_SYSTEM, Font.STYLE_PLAIN, Font.SIZE_MEDIUM));
     
             return dayLabelStyle;
@@ -937,6 +883,14 @@ public class MyApp extends com.codename1.system.Lifecycle {
         }
         
     }
+    
+    
+    
+    
+    //Christy's section: Tasks
 
+    //Andrea's section:  Achievements, Settings
+
+    //Dawn's section: Characters
 
 }
