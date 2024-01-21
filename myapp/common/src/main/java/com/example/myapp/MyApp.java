@@ -1,12 +1,16 @@
 
 package com.example.myapp;
-
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.Box;
-
+import com.codename1.ui.list.DefaultListModel;
+import com.codename1.components.CheckBoxList;
 import com.codename1.components.SpanLabel;
 import com.codename1.io.JSONParser;
+import com.codename1.io.Log;
 import com.codename1.io.Storage;
 import com.codename1.ui.Button;
+import com.codename1.ui.CheckBox;
 import com.codename1.ui.Container;
 import com.codename1.ui.Dialog;
 import com.codename1.ui.Display;
@@ -21,14 +25,24 @@ import com.codename1.ui.Graphics;
 
 // Import for Label
 import com.codename1.ui.Label;
+// import com.codename1.ui.list;
 import com.codename1.ui.PickerComponent;
 import com.codename1.ui.TextComponent;
 import com.codename1.ui.TextComponentPassword;
 import com.codename1.ui.geom.Dimension;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
+import com.codename1.ui.list.MultipleSelectionListModel;
 import com.codename1.ui.plaf.Border;
 import com.codename1.ui.plaf.Style;
+import com.codename1.ui.spinner.Picker;
+import com.example.myapp.MyApp.CharacterSelectionPage;
+import com.example.myapp.MyApp.CharacterStatusPage;
+import com.example.myapp.MyApp.CustomProgressBar;
+import com.example.myapp.MyApp.PreviousFormSetter;
+import com.example.myapp.MyApp.SettingsPage;
+import com.example.myapp.MyApp.Task;
+import com.example.myapp.MyApp.WeeklySummaryPage;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -106,7 +120,8 @@ public class MyApp extends com.codename1.system.Lifecycle {
     }
 
     public void showTaskOverview(){
-        TasksOverviewPage tasksOverviewPage = new TasksOverviewPage(this);
+        // Use TaskManager to manage tasks across pages
+        TasksOverviewPage tasksOverviewPage = new TasksOverviewPage(this, TaskManager.getInstance());
         tasksOverviewPage.show();
     }
 
@@ -126,6 +141,11 @@ public class MyApp extends com.codename1.system.Lifecycle {
             // Add the icon to the HomePage
             this.add(homeIconLabel);
 
+            // Add the custom progress bar at the bottom
+            customProgressBar = new CustomProgressBar();
+            customProgressBar.setProgress(0.75f); // Set an initial progress value (change as needed)
+            add(BorderLayout.south(customProgressBar));
+
             getToolbar().addCommandToSideMenu("Tasks", null, e -> showTaskOverview());
             getToolbar().addCommandToSideMenu("Character Selection", null, e -> showCharacterSelection());
           //  getToolbar().addCommandToSideMenu("Character Selection", null, e -> showTab("Character Selection"));
@@ -138,10 +158,7 @@ public class MyApp extends com.codename1.system.Lifecycle {
             getToolbar().addCommandToSideMenu("Settings", null, e -> showTab("Settings"));
             getToolbar().addCommandToSideMenu("Logout", null, e -> logout());
 
-            // Add the custom progress bar at the bottom
-            customProgressBar = new CustomProgressBar();
-            customProgressBar.setProgress(0.75f); // Set an initial progress value (change as needed)
-            add(BorderLayout.south(customProgressBar));
+
         }
 
 
@@ -189,18 +206,38 @@ public class MyApp extends com.codename1.system.Lifecycle {
             charSelectPage.show();
         }
         
-        
     }
 
     public class TasksOverviewPage extends Form{
         private final MyApp mainApp;
+        private TaskManager taskManager;
 
-        public TasksOverviewPage(MyApp mainApp){
+        public TasksOverviewPage(MyApp mainApp, TaskManager taskManager){
             super("Tasks Overview", BoxLayout.y());
             this.mainApp = mainApp;
+            if(taskManager == null){
+                taskManager = TaskManager.getInstance();
+            }
+            this.taskManager = taskManager;
 
-            // Sample label
-            Label label = new Label("No Tasks");
+            List <Task> tasks = taskManager.getTasks();
+            // display tasks
+            if(tasks.isEmpty()){
+                // Sample label
+                Label label = new Label("No Tasks");
+                add(label);
+            } else {
+                Container taskContainer = new Container(BoxLayout.y());
+
+                // Add CheckBox components for each task
+                for (Task t : tasks) {
+                    CheckBox checkBox = new CheckBox(t.getTaskName());
+                    taskContainer.add(checkBox);
+                }
+
+                add(taskContainer);
+            }
+            
             
             // Buttons
             // go back
@@ -212,41 +249,41 @@ public class MyApp extends com.codename1.system.Lifecycle {
             addTaskButton.addActionListener(e->showCreateTaskPage());
 
             // adding to the Form
-            add(label);
             add(addTaskButton);
             add(backButton);
         }
 
         private void showCreateTaskPage(){
-            CreateTaskPage createTaskPage = new CreateTaskPage(mainApp);
+            CreateTaskPage createTaskPage = new CreateTaskPage(mainApp, taskManager);
             createTaskPage.show();
         }
-
-
     }
 
     public class CreateTaskPage extends Form {
         private final MyApp mainApp;
+        private TaskManager taskManager;
     
-        public CreateTaskPage(MyApp mainApp){
+        public CreateTaskPage(MyApp mainApp, TaskManager taskManager){
             super("Create Your Task", BoxLayout.y());
             this.mainApp = mainApp;
+            if(taskManager == null){
+                taskManager = TaskManager.getInstance();
+            }
+            this.taskManager = taskManager;
 
             //add character selection page components and logic here
             TextComponent TaskName = new TextComponent().label("Task Name");
             
-            int min = 0;
-            // int hour = 2;
-            PickerComponent DueDate = PickerComponent.createTime(min).label("Due Time");
+            Picker Timepicker = new Picker();
+            Timepicker.setType(Display.PICKER_TYPE_TIME);
 
             // back button
             Button backToOverviewButton = new Button("Back to Tasks");
-            
-            // HomePage hp = new HomePage(mainApp);
-            backToOverviewButton.addActionListener(e ->showTaskOverview());
+            backToOverviewButton.addActionListener(e -> saveTask(TaskName.getText(), Timepicker.getTime()));
+            // backToOverviewButton.addActionListener(e ->showTaskOverview());
 
             add(TaskName);
-            add(DueDate);
+            add(Timepicker);
             add(backToOverviewButton);
         }
 
@@ -254,10 +291,76 @@ public class MyApp extends com.codename1.system.Lifecycle {
             mainApp.showTaskOverview();
         }
 
-
-        
+        private void saveTask(String taskName, int dueDate) {
+            if(!taskName.isEmpty()){
+                Task newTask = new Task(taskName, dueDate);
+                taskManager.addTask(newTask);
+                showTaskOverview();
+            }
+        }
     }
+
+    public class Task {
+        private String taskname;
+        private int duetime;
+        
+        public Task(String taskname, int duetime){
+            this.taskname = taskname;
+            this.duetime = duetime;
+        }
+
+        public String getTaskName(){
+            return taskname;
+        }
+
+        public void setTaskName(String taskName) {
+            this.taskname = taskName;
+        }
     
+        public int getDueDate() {
+            return duetime;
+        }
+    
+        public void setDueDate(int dueDate) {
+            this.duetime = dueDate;
+        }
+    }
+
+    // TaskManager
+    public static class TaskManager {
+        private static TaskManager instance;
+        private List<Task> tasks;
+
+        private TaskManager() {
+            this.tasks = new ArrayList<>();
+        }
+
+        public static TaskManager getInstance() {
+            if (instance == null) {
+                instance = new TaskManager();
+            }
+            return instance;
+        }
+
+        public List<Task> getTasks() {
+            return tasks;
+        }
+
+        public void addTask(Task task) {
+            if (instance == null){
+                instance = TaskManager.getInstance();
+            }
+            if (tasks == null) {
+                tasks = new ArrayList<>();
+            }
+            tasks.add(task);
+        }
+
+        // Add other methods as needed
+    }
+
+
+    // Character Selection Page
     public class CharacterSelectionPage extends Form {
         private final MyApp mainApp;
 
