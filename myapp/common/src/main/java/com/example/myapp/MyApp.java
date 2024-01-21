@@ -484,6 +484,7 @@ public class MyApp extends com.codename1.system.Lifecycle {
         private Date birthday;
         private Date lastMeal;
         private Date lastDrink;
+        long appStartTime = System.currentTimeMillis();
     
         public Pet(Date lastMeal, Date lastDrink) {
             this.name = "Yoshi";
@@ -493,8 +494,9 @@ public class MyApp extends com.codename1.system.Lifecycle {
         }
     
         public int getAge() {
-            long timeSince = calcTimeSince(birthday);
-            return (int) timeSince;
+            long elapsedTime = System.currentTimeMillis() - appStartTime;
+            long seconds = elapsedTime / 1000;
+            return (int) seconds;
         }
     
         public boolean isAboutToDie() {
@@ -615,72 +617,70 @@ public class MyApp extends com.codename1.system.Lifecycle {
     
     
     public class CharacterStatusPage extends Form {
-    private final MyApp mainApp;
-    private Pet pet;
+        private final MyApp mainApp;
+        private Pet pet;
 
-    private Label ageLabel;
-    private Label healthLabel;
-    private Label happinessLabel;
+        private Label ageLabel;
+        private Label healthLabel;
+        private Label happinessLabel;
 
-    public CharacterStatusPage(MyApp mainApp) {
-        super("Character Status", BoxLayout.y());
-        this.mainApp = mainApp;
+        public CharacterStatusPage(MyApp mainApp) {
+            super("Character Status", BoxLayout.y());
+            this.mainApp = mainApp;
 
-        // Initialize the Pet
-        pet = new Pet(new Date(), new Date());
+            // Initialize the Pet
+            pet = new Pet(new Date(), new Date());
 
-        // "Back" button with a single arrow icon
-        Button backButton = new Button(FontImage.createMaterial(FontImage.MATERIAL_ARROW_BACK, "Back", 5));
-        backButton.addActionListener(e -> showHomePage());
-        addComponent(backButton);
+            // "Back" button with a single arrow icon
+            Button backButton = new Button(FontImage.createMaterial(FontImage.MATERIAL_ARROW_BACK, "Back", 5));
+            backButton.addActionListener(e -> showHomePage());
+            addComponent(backButton);
 
-        // Example: Add a button to feed the pet
-        Button feedButton = new Button("Feed");
-        //feedButton.addActionListener(e -> showTaskPage());
-        addComponent(feedButton);
+            // Example: Add a button to feed the pet
+            Button feedButton = new Button("Feed");
+            feedButton.addActionListener(e -> showTaskOverview());
+            addComponent(feedButton);
 
-        // Labels to display pet information
-        ageLabel = new Label("Age: ");
-        addComponent(ageLabel);
+            // Labels to display pet information
+            ageLabel = new Label("Age: ");
+            addComponent(ageLabel);
 
-        healthLabel = new Label("Health: ");
-        addComponent(healthLabel);
+            healthLabel = new Label("Health: ");
+            addComponent(healthLabel);
 
-        happinessLabel = new Label("Happiness: ");
-        addComponent(happinessLabel);
+            happinessLabel = new Label("Happiness: ");
+            addComponent(happinessLabel);
 
-        // Add other UI components or actions as needed
-        // ...
+            // Add other UI components or actions as needed
+            // ...
 
-        // Initialize the UI
-        updateUI();
+            // Initialize the UI
+            updateUI();
 
-        // Set up a timer to update UI every second
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                updateUI();
-            }
-        }, 0, 1000); // Update every second
-    }
+            // Set up a timer to update UI every second
+            Timer timer = new Timer();
+            timer.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    updateUI();
+                }
+            }, 0, 1000); // Update every second
+        }
 
-    private void showHomePage() {
-        mainApp.showHomePage();
-    }
+        private void showHomePage() {
+            mainApp.showHomePage();
+        }
 
-    private void updateUI() {
-        // Update UI elements based on pet's status
-        int ageInSeconds = pet.getAge();
-        String health = pet.getHunger(); // Assuming you have a getHealth() method in Pet class
-        String happinessLevel = pet.getHappinessLevel();
-    
-        // Update UI components accordingly
-        Display.getInstance().callSerially(() -> {
+        private void updateUI() {
+            // Update UI elements based on pet's status
+            int ageInSeconds = pet.getAge();
+            String health = pet.getHunger(); // Assuming you have a getHealth() method in Pet class
+            String happinessLevel = pet.getHappinessLevel();
+        
+            // Update UI components accordingly
             ageLabel.setText("Age: " + ageInSeconds + " seconds");
             healthLabel.setText("Health: " + health);
             happinessLabel.setText("Happiness: " + happinessLevel);
-                });
         }
     }
     
