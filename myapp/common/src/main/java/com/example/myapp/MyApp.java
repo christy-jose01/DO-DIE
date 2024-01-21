@@ -21,6 +21,7 @@ import com.codename1.ui.Form;
 import com.codename1.ui.Graphics;
 
 // Import for ProgressBar
+
 //import com.codename1.ui.spinner.ProgressBar;
 
 // Import for Label
@@ -43,6 +44,12 @@ import com.example.myapp.MyApp.PreviousFormSetter;
 import com.example.myapp.MyApp.SettingsPage;
 import com.example.myapp.MyApp.Task;
 import com.example.myapp.MyApp.WeeklySummaryPage;
+import com.codename1.ui.TextArea;
+import static com.codename1.ui.CN.*;
+import java.io.InputStream;  // Import for InputStream
+import com.codename1.io.Util;  // Import for Util
+import java.io.OutputStream;
+
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -69,6 +76,13 @@ import com.codename1.ui.Component;
 
 public class MyApp extends com.codename1.system.Lifecycle {
     private Form signInForm;
+
+    
+
+    //@Override
+    //public void init(Object context) {
+    //    Storage.init("MyAppStorage");  // Choose an appropriate storage name for your app
+    //}
 
     @Override
     public void runApp() {
@@ -128,6 +142,42 @@ public class MyApp extends com.codename1.system.Lifecycle {
         tasksOverviewPage.show();
     }
 
+    public void saveFeedback(String feedback) {
+        try {
+            Storage.getInstance().writeObject("feedback", feedback);
+            System.out.println("Feedback saved successfully");
+        } catch(Exception err) {
+            err.printStackTrace();
+            Dialog.show("Error", "Unable to save feedback.", "OK", null);
+        }
+    }
+
+    public void checkAndDisplayFeedback() {
+        String feedback = readFeedback();
+        if (feedback != null) {
+            Dialog.show(":)", "Feedback retrieved: " + feedback, "OK", null);
+        } else {
+            Dialog.show("Error", "No feedback found.", "OK", null);
+        }
+    }
+
+    public String readFeedback() {
+        try {
+            // Attempt to read the feedback from storage
+            InputStream is = Storage.getInstance().createInputStream("feedback");
+            byte[] bytes = Util.readInputStream(is);
+            is.close();
+            
+            // Convert bytes to string
+            String savedFeedback = new String(bytes, "UTF-8");
+            return savedFeedback;
+        } catch (IOException err) {
+            err.printStackTrace();
+            Dialog.show("Error", "Unable to read feedback.", "OK", null);
+        }
+        return null; // Return null if there was an error
+    }
+
     public class HomePage extends Form {
 
         private final MyApp mainApp;
@@ -160,7 +210,12 @@ public class MyApp extends com.codename1.system.Lifecycle {
             getToolbar().addCommandToSideMenu("Settings", null, e -> showTab("Settings"));
             getToolbar().addCommandToSideMenu("Logout", null, e -> logout());
 
+            
 
+            // Add the custom progress bar at the bottom
+            customProgressBar = new CustomProgressBar();
+            customProgressBar.setProgress(0.75f); // Set an initial progress value (change as needed)
+            add(BorderLayout.south(customProgressBar));
 
             // Create the style for the icon
             Style s = new Style();
@@ -189,6 +244,7 @@ public class MyApp extends com.codename1.system.Lifecycle {
             // Add the spacer and the container to the form
             this.add(spacer);
             this.add(centerContainer);
+
 
             //this.add(PetIconLabel);
         }
@@ -834,7 +890,7 @@ public class MyApp extends com.codename1.system.Lifecycle {
             Button thumbsUpButton = new Button(thumbsUpIcon );
             Button thumbsDownButton = new Button(thumbsDownIcon );
 
-            thumbsUpButton.addActionListener(e -> showHomePage());
+            thumbsUpButton.addActionListener(e -> showPositiveFeedbackForm());
             thumbsDownButton.addActionListener(e -> {new ContactSupportPage(previousForm).show(); // Assuming ContactSupportPage has a constructor accepting a Form
             });
 
@@ -849,7 +905,41 @@ public class MyApp extends com.codename1.system.Lifecycle {
 
             //add(contentContainer);
             add(goToPreviousPageButton);
+
+            Label spacer = new Label();
+            spacer.setUIID("Spacer"); // You can set a UIID for styling if needed
+            add(spacer);
+
+            Button checkFeedbackButton = new Button("People love us!!");
+            checkFeedbackButton.addActionListener(e -> checkAndDisplayFeedback());
+            add(checkFeedbackButton);
         }
+        private void showPositiveFeedbackForm() {
+            Dialog feedbackDialog = new Dialog("Positive Feedback");
+
+            TextArea feedbackArea = new TextArea(5, 20);
+            feedbackArea.setHint("Type your feedback here...");
+
+            Button submitButton = new Button("Submit");
+            submitButton.addActionListener(e -> {
+                String feedback = feedbackArea.getText();
+            // Here, you can handle the feedback, like sending it to a server or email
+            // For now, let's just show a confirmation dialog
+                if(!feedback.isEmpty()) {
+                    saveFeedback(feedback); // Call the method to save feedback
+                    Dialog.show("Thank You", "Your feedback has been received.", "OK", null);
+                    feedbackDialog.dispose(); // Close the dialog after submission
+                }
+            });
+        Button doneButton = new Button("Done");
+        doneButton.addActionListener(e -> feedbackDialog.dispose()); // Close the dialog 
+
+        feedbackDialog.setLayout(new BoxLayout(BoxLayout.Y_AXIS));
+        feedbackDialog.addAll(feedbackArea, submitButton, doneButton);
+
+        feedbackDialog.show();
+        }
+
 
         private void goToPreviousPage() {
             if (previousForm != null) {
