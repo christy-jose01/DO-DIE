@@ -48,5 +48,13 @@ public class TaskManager {
         }
     }
 
+    public void markTaskDone(Task task){
+        if(tasks.contains(task)){
+            if(!task.isDone()){
+                task.markDone();
+            }
+        }
+    }
+
     // Add other methods as needed
 }

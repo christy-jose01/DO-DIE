@@ -59,9 +59,11 @@ public class TasksOverviewPage extends Form{
                 taskContainer.add(checkBox);
 
                 checkBox.addActionListener(e-> {if(checkBox.isSelected()){
-                    taskContainer.removeComponent(checkBox);
-                    tasks.remove(t);
-                    mainApp.showTaskOverview();
+                    checkBox.setSelected(true);
+                    taskManager.markTaskDone(t);
+                    // taskContainer.removeComponent(checkBox);
+                    // tasks.remove(t);
+                    // mainApp.showTaskOverview();
                 }});
             }
 
