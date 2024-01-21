@@ -61,10 +61,38 @@ public class TasksOverviewPage extends Form{
         Button addTaskButton = new Button("Add Task");
         addTaskButton.addActionListener(e->showCreateTaskPage());
 
+        // // clear button
+        // Button clearButton = new Button("Clear Completed Tasks");
+        // clearButton.addActionListener(e->clearTasks());
+
         // adding to the Form
         add(addTaskButton);
-        // add(backButton);
+        // add(clearButton);
     }
+
+
+    // private void clearTasks() {
+    //     if (!tasks.isEmpty()) {
+    //         List<Task> tasksToRemove = new ArrayList<>(); // Create a new list to store the tasks to remove
+    //         for (Task t : tasks) {
+    //             if (t.isDone()) {
+    //                 tasksToRemove.add(t); // Add the task to the list if it is done
+    //             }
+    //         }
+    //         for (Task t : tasksToRemove) {
+    //             // remove task
+    //             taskManager.removeTask(t);
+    
+    //             Container taskContainer = (Container) getComponentAt(tasks.indexOf(t) + 1); // get the corresponding container
+    //             CheckBox checkBox = (CheckBox) taskContainer.getComponentAt(0); // get the corresponding checkbox
+    //             // remove container
+    //             taskContainer.removeComponent(checkBox); // remove the checkbox
+    //             // tasks.remove(t); // remove the task from the list (not necessary)
+    //         }
+    //         tasks.removeAll(tasksToRemove); // Remove the tasks from the list
+    //         mainApp.showTaskOverview();
+    //     }
+    // }
 
     private void displayTasks(){
         // display tasks
@@ -83,10 +111,11 @@ public class TasksOverviewPage extends Form{
 
                 checkBox.addActionListener(e-> {if(checkBox.isSelected()){
                     taskManager.markTaskDone(t);
-                    
+                    customProgressBar.setProgress(taskManager.portionDone());
                     // taskContainer.removeComponent(checkBox);
                     // tasks.remove(t);
-                    mainApp.showTaskOverview();
+                    // mainApp.showTaskOverview();
+                    this.show();
                 }});
             }
             add(taskContainer);
