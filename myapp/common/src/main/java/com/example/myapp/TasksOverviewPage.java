@@ -116,6 +116,9 @@ public class TasksOverviewPage extends Form{
                     // tasks.remove(t);
                     // mainApp.showTaskOverview();
                     this.show();
+                } else{
+                    taskManager.unmarkTaskDone(t);
+                    customProgressBar.setProgress(taskManager.portionDone());
                 }});
             }
             add(taskContainer);

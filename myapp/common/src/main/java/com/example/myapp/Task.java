@@ -34,4 +34,8 @@ public class Task {
     public void markDone(){
         this.isDone = true;
     }
+
+    public void unmarkDone(){
+        this.isDone = false;
+    }
 }

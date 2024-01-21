@@ -56,6 +56,14 @@ public class TaskManager {
         }
     }
 
+    public void unmarkTaskDone(Task task){
+        if(tasks.contains(task)){
+            if(task.isDone()){
+                task.unmarkDone();
+            }
+        }
+    }
+
     public float portionDone(){
         int totalTasks = tasks.size();
 
