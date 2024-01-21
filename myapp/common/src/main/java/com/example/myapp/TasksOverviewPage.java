@@ -17,7 +17,7 @@ import com.example.myapp.MyApp.SettingsPage;
 import com.example.myapp.MyApp.WeeklySummaryPage;
 import com.example.myapp.Task;
 import com.example.myapp.TaskManager;
-import com.example.myapp.MyApp.CustomProgressBar;
+// import com.example.myapp.MyApp.CustomProgressBar;
 import com.codename1.ui.CheckBox;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +47,7 @@ public class TasksOverviewPage extends Form{
 
         // Add the custom progress bar at the bottom
         customProgressBar = new CustomProgressBar();
-        customProgressBar.setProgress(0.75f); // Set an initial progress value (change as needed)
+        customProgressBar.setProgress(taskManager.portionDone()); // Set an initial progress value (change as needed)
         add(BorderLayout.south(customProgressBar));
 
         displayTasks();

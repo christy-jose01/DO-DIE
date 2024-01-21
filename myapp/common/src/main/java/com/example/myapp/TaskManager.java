@@ -56,5 +56,23 @@ public class TaskManager {
         }
     }
 
+    public float portionDone(){
+        int totalTasks = tasks.size();
+
+        if(totalTasks == 0){
+            return 0;
+        }
+
+        int doneTasks = 0;
+
+        for(Task t : tasks){
+            if(t.isDone()){
+                doneTasks++;
+            }
+        }
+
+        return (float) doneTasks/totalTasks;
+    }
+
     // Add other methods as needed
 }
