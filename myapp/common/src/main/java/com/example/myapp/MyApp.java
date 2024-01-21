@@ -42,7 +42,7 @@ import com.example.myapp.MyApp.CharacterStatusPage;
 import com.example.myapp.MyApp.CustomProgressBar;
 import com.example.myapp.MyApp.PreviousFormSetter;
 import com.example.myapp.MyApp.SettingsPage;
-import com.example.myapp.MyApp.Task;
+import com.example.myapp.Task;
 import com.example.myapp.MyApp.WeeklySummaryPage;
 import com.codename1.ui.TextArea;
 import static com.codename1.ui.CN.*;
@@ -226,277 +226,6 @@ public class MyApp extends com.codename1.system.Lifecycle {
         return null; // Return null if there was an error
     }
 
-    public class HomePage extends Form {
-
-        private final MyApp mainApp;
-        private CustomProgressBar customProgressBar;
-
-        public HomePage(MyApp mainApp) {
-            super("Home Page", BoxLayout.y());
-            this.mainApp = mainApp;
-
-            // Create an icon
-            Image homeIcon = FontImage.createMaterial(FontImage.MATERIAL_HOME, new Style());
-            Label homeIconLabel = new Label(homeIcon);
-        
-            // Add the icon to the HomePage
-            this.add(homeIconLabel);
-
-
-
-
-
-            getToolbar().addCommandToSideMenu("Tasks", null, e -> showTaskOverview());
-            getToolbar().addCommandToSideMenu("Character Selection", null, e -> showCharacterSelection());
-          //  getToolbar().addCommandToSideMenu("Character Selection", null, e -> showTab("Character Selection"));
-          //  getToolbar().addCommandToSideMenu("Character Status", null, e -> showTab("Character Status"));
-            getToolbar().addCommandToSideMenu("Character Status", null, e -> showCharacterStatus());
-            getToolbar().addCommandToSideMenu("Achievements", null, e -> showTab("Achievements"));
-        //    getToolbar().addCommandToSideMenu("Character Selection", null, e -> showTab("Character Selection"));
-            // getToolbar().addCommandToSideMenu("Character Status", null, e -> showTab("Character Status"));
-            getToolbar().addCommandToSideMenu("Weekly Summary", null, e -> showWeeklySummary());
-            getToolbar().addCommandToSideMenu("Settings", null, e -> showTab("Settings"));
-            getToolbar().addCommandToSideMenu("Logout", null, e -> logout());
-
-            
-
-            // Add the custom progress bar at the bottom
-            customProgressBar = new CustomProgressBar();
-            customProgressBar.setProgress(0.75f); // Set an initial progress value (change as needed)
-            add(BorderLayout.south(customProgressBar));
-
-            // Create the style for the icon
-            Style s = new Style();
-            s.setFont(FontImage.getMaterialDesignFont().derive(Display.getInstance().convertToPixels(30), Font.STYLE_PLAIN));
-
-            // Create the character icon
-            s.setFgColor(0xffa0a9); // Set the foreground color to red (in ARGB format)
-            Image PetIcon = FontImage.createMaterial(FontImage.MATERIAL_FACE, s);
-
-            // Use the icon in a button
-            Label PetIconLabel = new Label(PetIcon);
-            // Set background color
-            Style labelStyle = PetIconLabel.getAllStyles();
-            labelStyle.setBgColor(0xe89091); // Green background color
-            labelStyle.setBgTransparency(255); // Opaque background
-
-            // Create a container with a centered layout for the icon
-            Container centerContainer = new Container(new FlowLayout(Component.CENTER));
-            centerContainer.add(PetIconLabel);
-
-            // Add the container with the icon to the HomePage
-            // Create a spacer to position the icon lower
-            Label spacer = new Label();
-            spacer.setPreferredH(Display.getInstance().convertToPixels(5)); // Adjust the height as needed
-
-            // Add the spacer and the container to the form
-            this.add(spacer);
-            this.add(centerContainer);
-
-
-            //this.add(PetIconLabel);
-        }
-
-
-        public void updateProgressBar(float progress) {
-            customProgressBar.setProgress(progress);
-        }
-        
-        // Method to update the progress bar value
-        public void setCustomProgressBarValue(float value) {
-            if (customProgressBar != null) {
-                customProgressBar.setProgress(value);
-            }
-        }
-
-        private void showSettingsPage() {
-            SettingsPage settingsPage = new SettingsPage();
-            settingsPage.setPreviousForm(this); // Set the previous form to the current instance of HomePage
-            
-            
-            settingsPage.show();
-        }
-    
-        private void showTab(String tabName) {
-            if ("Settings".equals(tabName)) {
-                showSettingsPage();
-            } else {
-                Dialog.show("Tab Selected", "You selected the " + tabName + " tab", "OK", null);
-            }
-        }
-        
-        private void showWeeklySummary() {
-            WeeklySummaryPage weeklySummaryPage = new WeeklySummaryPage(this);
-            weeklySummaryPage.show();
-        }
-
-        private void logout() {
-            mainApp.showSignInForm();
-        }
-
-        private void showCharacterStatus() {
-            CharacterStatusPage characterStatusPage = new CharacterStatusPage(mainApp);
-            characterStatusPage.show();
-        }
-
-        private void showCharacterSelection(){
-            CharacterSelectionPage charSelectPage = new CharacterSelectionPage(mainApp);
-            charSelectPage.show();
-        }
-        
-    }
-
-    public class TasksOverviewPage extends Form{
-        private final MyApp mainApp;
-        private TaskManager taskManager;
-
-        public TasksOverviewPage(MyApp mainApp, TaskManager taskManager){
-            super("Tasks Overview", BoxLayout.y());
-            this.mainApp = mainApp;
-            if(taskManager == null){
-                taskManager = TaskManager.getInstance();
-            }
-            this.taskManager = taskManager;
-
-            List <Task> tasks = taskManager.getTasks();
-            // display tasks
-            if(tasks.isEmpty()){
-                // Sample label
-                Label label = new Label("No Tasks");
-                add(label);
-            } else {
-                Container taskContainer = new Container(BoxLayout.y());
-
-                // Add CheckBox components for each task
-                for (Task t : tasks) {
-                    CheckBox checkBox = new CheckBox(t.getTaskName());
-                    taskContainer.add(checkBox);
-                }
-
-                add(taskContainer);
-            }
-            
-            
-            // Buttons
-            // go back
-            Button backButton = new Button("Back to Homepage");
-            backButton.addActionListener(e->showHomePage());
-
-            // add task
-            Button addTaskButton = new Button("Add Task");
-            addTaskButton.addActionListener(e->showCreateTaskPage());
-
-            // adding to the Form
-            add(addTaskButton);
-            add(backButton);
-        }
-
-        private void showCreateTaskPage(){
-            CreateTaskPage createTaskPage = new CreateTaskPage(mainApp, taskManager);
-            createTaskPage.show();
-        }
-    }
-
-    public class CreateTaskPage extends Form {
-        private final MyApp mainApp;
-        private TaskManager taskManager;
-    
-        public CreateTaskPage(MyApp mainApp, TaskManager taskManager){
-            super("Create Your Task", BoxLayout.y());
-            this.mainApp = mainApp;
-            if(taskManager == null){
-                taskManager = TaskManager.getInstance();
-            }
-            this.taskManager = taskManager;
-
-            //add character selection page components and logic here
-            TextComponent TaskName = new TextComponent().label("Task Name");
-            
-            Picker Timepicker = new Picker();
-            Timepicker.setType(Display.PICKER_TYPE_TIME);
-
-            // back button
-            Button backToOverviewButton = new Button("Back to Tasks");
-            backToOverviewButton.addActionListener(e -> saveTask(TaskName.getText(), Timepicker.getTime()));
-            // backToOverviewButton.addActionListener(e ->showTaskOverview());
-
-            add(TaskName);
-            add(Timepicker);
-            add(backToOverviewButton);
-        }
-
-        private void showTaskOverview(){
-            mainApp.showTaskOverview();
-        }
-
-        private void saveTask(String taskName, int dueDate) {
-            if(!taskName.isEmpty()){
-                Task newTask = new Task(taskName, dueDate);
-                taskManager.addTask(newTask);
-                showTaskOverview();
-            }
-        }
-    }
-
-    public class Task {
-        private String taskname;
-        private int duetime;
-        
-        public Task(String taskname, int duetime){
-            this.taskname = taskname;
-            this.duetime = duetime;
-        }
-
-        public String getTaskName(){
-            return taskname;
-        }
-
-        public void setTaskName(String taskName) {
-            this.taskname = taskName;
-        }
-    
-        public int getDueDate() {
-            return duetime;
-        }
-    
-        public void setDueDate(int dueDate) {
-            this.duetime = dueDate;
-        }
-    }
-
-    // TaskManager
-    public static class TaskManager {
-        private static TaskManager instance;
-        private List<Task> tasks;
-
-        private TaskManager() {
-            this.tasks = new ArrayList<>();
-        }
-
-        public static TaskManager getInstance() {
-            if (instance == null) {
-                instance = new TaskManager();
-            }
-            return instance;
-        }
-
-        public List<Task> getTasks() {
-            return tasks;
-        }
-
-        public void addTask(Task task) {
-            if (instance == null){
-                instance = TaskManager.getInstance();
-            }
-            if (tasks == null) {
-                tasks = new ArrayList<>();
-            }
-            tasks.add(task);
-        }
-
-        // Add other methods as needed
-    }
-
 
     // Character Selection Page
     public class CharacterSelectionPage extends Form {
@@ -532,6 +261,7 @@ public class MyApp extends com.codename1.system.Lifecycle {
         private Date birthday;
         private Date lastMeal;
         private Date lastDrink;
+        long appStartTime = System.currentTimeMillis();
     
         public Pet(Date lastMeal, Date lastDrink) {
             this.name = "Yoshi";
@@ -541,8 +271,9 @@ public class MyApp extends com.codename1.system.Lifecycle {
         }
     
         public int getAge() {
-            long timeSince = calcTimeSince(birthday);
-            return (int) timeSince;
+            long elapsedTime = System.currentTimeMillis() - appStartTime;
+            long seconds = elapsedTime / 1000;
+            return (int) seconds;
         }
     
         public boolean isAboutToDie() {
@@ -663,72 +394,70 @@ public class MyApp extends com.codename1.system.Lifecycle {
     
     
     public class CharacterStatusPage extends Form {
-    private final MyApp mainApp;
-    private Pet pet;
+        private final MyApp mainApp;
+        private Pet pet;
 
-    private Label ageLabel;
-    private Label healthLabel;
-    private Label happinessLabel;
+        private Label ageLabel;
+        private Label healthLabel;
+        private Label happinessLabel;
 
-    public CharacterStatusPage(MyApp mainApp) {
-        super("Character Status", BoxLayout.y());
-        this.mainApp = mainApp;
+        public CharacterStatusPage(MyApp mainApp) {
+            super("Character Status", BoxLayout.y());
+            this.mainApp = mainApp;
 
-        // Initialize the Pet
-        pet = new Pet(new Date(), new Date());
+            // Initialize the Pet
+            pet = new Pet(new Date(), new Date());
 
-        // "Back" button with a single arrow icon
-        Button backButton = new Button(FontImage.createMaterial(FontImage.MATERIAL_ARROW_BACK, "Back", 5));
-        backButton.addActionListener(e -> showHomePage());
-        addComponent(backButton);
+            // "Back" button with a single arrow icon
+            Button backButton = new Button(FontImage.createMaterial(FontImage.MATERIAL_ARROW_BACK, "Back", 5));
+            backButton.addActionListener(e -> showHomePage());
+            addComponent(backButton);
 
-        // Example: Add a button to feed the pet
-        Button feedButton = new Button("Feed");
-        //feedButton.addActionListener(e -> showTaskPage());
-        addComponent(feedButton);
+            // Example: Add a button to feed the pet
+            Button feedButton = new Button("Feed");
+            feedButton.addActionListener(e -> showTaskOverview());
+            addComponent(feedButton);
 
-        // Labels to display pet information
-        ageLabel = new Label("Age: ");
-        addComponent(ageLabel);
+            // Labels to display pet information
+            ageLabel = new Label("Age: ");
+            addComponent(ageLabel);
 
-        healthLabel = new Label("Health: ");
-        addComponent(healthLabel);
+            healthLabel = new Label("Health: ");
+            addComponent(healthLabel);
 
-        happinessLabel = new Label("Happiness: ");
-        addComponent(happinessLabel);
+            happinessLabel = new Label("Happiness: ");
+            addComponent(happinessLabel);
 
-        // Add other UI components or actions as needed
-        // ...
+            // Add other UI components or actions as needed
+            // ...
 
-        // Initialize the UI
-        updateUI();
+            // Initialize the UI
+            updateUI();
 
-        // Set up a timer to update UI every second
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                updateUI();
-            }
-        }, 0, 1000); // Update every second
-    }
+            // Set up a timer to update UI every second
+            Timer timer = new Timer();
+            timer.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    updateUI();
+                }
+            }, 0, 1000); // Update every second
+        }
 
-    private void showHomePage() {
-        mainApp.showHomePage();
-    }
+        private void showHomePage() {
+            mainApp.showHomePage();
+        }
 
-    private void updateUI() {
-        // Update UI elements based on pet's status
-        int ageInSeconds = pet.getAge();
-        String health = pet.getHunger(); // Assuming you have a getHealth() method in Pet class
-        String happinessLevel = pet.getHappinessLevel();
-    
-        // Update UI components accordingly
-        Display.getInstance().callSerially(() -> {
+        private void updateUI() {
+            // Update UI elements based on pet's status
+            int ageInSeconds = pet.getAge();
+            String health = pet.getHunger(); // Assuming you have a getHealth() method in Pet class
+            String happinessLevel = pet.getHappinessLevel();
+        
+            // Update UI components accordingly
             ageLabel.setText("Age: " + ageInSeconds + " seconds");
             healthLabel.setText("Health: " + health);
             happinessLabel.setText("Happiness: " + happinessLevel);
-                });
         }
     }
     
@@ -1116,7 +845,7 @@ public class MyApp extends com.codename1.system.Lifecycle {
         }
     }
 
-    public class CustomProgressBar extends Container {
+    public static class CustomProgressBar extends Container {
 
         private float progress;
 
