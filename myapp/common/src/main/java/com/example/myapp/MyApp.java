@@ -139,7 +139,6 @@ public class MyApp extends com.codename1.system.Lifecycle {
             submitButton.addActionListener(submitEvent -> {
                 // Logic to handle the email submission
                 String email = emailField.getText();
-                // Here, you would typically call a method to handle the password reset request
                 // For example: resetPassword(email);
                 
                 // Show confirmation dialog
@@ -235,6 +234,41 @@ public class MyApp extends com.codename1.system.Lifecycle {
         public CharacterSelectionPage(MyApp mainApp) {
             super("Character Selection", BoxLayout.y());
             this.mainApp = mainApp;
+
+
+            // Create the style for the icon
+            Style s = new Style();
+            s.setFont(FontImage.getMaterialDesignFont().derive(Display.getInstance().convertToPixels(30), Font.STYLE_PLAIN));
+
+            // Create the character icon
+            s.setFgColor(0xffa0a9); // Set the foreground color to red (in ARGB format)
+            Image PetIcon = FontImage.createMaterial(FontImage.MATERIAL_FACE, s);
+
+            // Use the icon in a button
+            Label PetIconLabel = new Label(PetIcon);
+            // Set background color
+            Style labelStyle = PetIconLabel.getAllStyles();
+            labelStyle.setBgColor(0xe89091); 
+            labelStyle.setBgTransparency(255);
+
+            // Create a container with a centered layout for the icon
+            Container centerContainer = new Container(new FlowLayout(Component.CENTER));
+            centerContainer.add(PetIconLabel);
+
+            // Add the container with the icon to the HomePage
+            // Create a spacer to position the icon lower
+            Label spacer = new Label();
+            spacer.setPreferredH(Display.getInstance().convertToPixels(5)); 
+
+            // Add the spacer and the container to the form
+            this.add(spacer);
+            this.add(centerContainer);
+
+            Label spacer1 = new Label();
+            spacer1.setPreferredH(Display.getInstance().convertToPixels(10)); 
+
+            // Add the spacer and the container to the form
+            this.add(spacer1);
     
             
             
@@ -546,7 +580,6 @@ public class MyApp extends com.codename1.system.Lifecycle {
             super("Account Settings", BoxLayout.y());
             this.previousForm = previousForm;
 
-            // Add account settings components and logic here
 
             Button goToPreviousPageButton = new Button("Go to Previous Page");
             goToPreviousPageButton.addActionListener(e -> goToPreviousPage());
@@ -591,7 +624,6 @@ public class MyApp extends com.codename1.system.Lifecycle {
             super("Privacy Settings", BoxLayout.y());
             this.previousForm = previousForm;
 
-            // Add privacy settings components and logic here
 
             Button goToPreviousPageButton = new Button("Go to Previous Page");
             goToPreviousPageButton.addActionListener(e -> goToPreviousPage());
