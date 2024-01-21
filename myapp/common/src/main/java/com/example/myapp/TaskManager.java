@@ -34,5 +34,19 @@ public class TaskManager {
         tasks.add(task);
     }
 
+    public void removeTask(Task task){
+        if(instance == null){
+            throw new IllegalStateException("Task Manager is not initialized");
+        }
+
+        if(tasks == null){
+            throw new NullPointerException("No tasks in the system");
+        }
+
+        if(tasks.contains(task)){
+            tasks.remove(task);
+        }
+    }
+
     // Add other methods as needed
 }

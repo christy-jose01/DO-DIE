@@ -10,13 +10,14 @@ import com.codename1.ui.layouts.BoxLayout;
 import com.example.myapp.CreateTaskPage;
 import com.example.myapp.Task;
 import com.example.myapp.TaskManager;
-
+import com.codename1.ui.CheckBox;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TasksOverviewPage extends Form{
     private final MyApp mainApp;
     private TaskManager taskManager;
+    private List <Task> tasks;
 
     public TasksOverviewPage(MyApp mainApp, TaskManager taskManager){
         super("Tasks Overview", BoxLayout.y());
@@ -25,26 +26,10 @@ public class TasksOverviewPage extends Form{
             taskManager = TaskManager.getInstance();
         }
         this.taskManager = taskManager;
+        this.tasks =  taskManager.getTasks();
 
-        List <Task> tasks = taskManager.getTasks();
-        // display tasks
-        if(tasks.isEmpty()){
-            // Sample label
-            Label label = new Label("No Tasks");
-            add(label);
-        } else {
-            Container taskContainer = new Container(BoxLayout.y());
+        displayTasks();
 
-            // Add CheckBox components for each task
-            for (Task t : tasks) {
-                CheckBox checkBox = new CheckBox(t.getTaskName());
-                taskContainer.add(checkBox);
-            }
-
-            add(taskContainer);
-        }
-        
-        
         // Buttons
         // go back
         Button backButton = new Button("Back to Homepage");
@@ -57,6 +42,32 @@ public class TasksOverviewPage extends Form{
         // adding to the Form
         add(addTaskButton);
         add(backButton);
+    }
+
+    private void displayTasks(){
+        // display tasks
+        if(tasks.isEmpty()){
+            // Sample label
+            Label label = new Label("No Tasks");
+            add(label);
+        } else {
+            Container taskContainer = new Container(BoxLayout.y());
+
+            // Add CheckBox components for each task
+            for (Task t : tasks) {
+                CheckBox checkBox = new CheckBox(t.getTaskName());
+                taskContainer.add(checkBox);
+
+                checkBox.addActionListener(e-> {if(checkBox.isSelected()){
+                    taskContainer.removeComponent(checkBox);
+                    tasks.remove(t);
+                    mainApp.showTaskOverview();
+                }});
+            }
+
+            add(taskContainer);
+        }
+        
     }
 
     private void showCreateTaskPage(){
