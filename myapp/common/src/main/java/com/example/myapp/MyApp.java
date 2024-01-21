@@ -55,6 +55,7 @@ import java.util.prefs.Preferences;
 import com.codename1.l10n.SimpleDateFormat;
 
 import com.codename1.ui.Display;
+//import com.codename1.ui.Style;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -62,6 +63,8 @@ import com.codename1.ui.EncodedImage;
 import com.codename1.ui.Image;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
+import com.codename1.ui.layouts.FlowLayout;
+import com.codename1.ui.Component;
 
 
 public class MyApp extends com.codename1.system.Lifecycle {
@@ -141,10 +144,9 @@ public class MyApp extends com.codename1.system.Lifecycle {
             // Add the icon to the HomePage
             this.add(homeIconLabel);
 
-            // Add the custom progress bar at the bottom
-            customProgressBar = new CustomProgressBar();
-            customProgressBar.setProgress(0.75f); // Set an initial progress value (change as needed)
-            add(BorderLayout.south(customProgressBar));
+
+
+
 
             getToolbar().addCommandToSideMenu("Tasks", null, e -> showTaskOverview());
             getToolbar().addCommandToSideMenu("Character Selection", null, e -> showCharacterSelection());
@@ -159,6 +161,36 @@ public class MyApp extends com.codename1.system.Lifecycle {
             getToolbar().addCommandToSideMenu("Logout", null, e -> logout());
 
 
+
+            // Create the style for the icon
+            Style s = new Style();
+            s.setFont(FontImage.getMaterialDesignFont().derive(Display.getInstance().convertToPixels(30), Font.STYLE_PLAIN));
+
+            // Create the character icon
+            s.setFgColor(0xffa0a9); // Set the foreground color to red (in ARGB format)
+            Image PetIcon = FontImage.createMaterial(FontImage.MATERIAL_FACE, s);
+
+            // Use the icon in a button
+            Label PetIconLabel = new Label(PetIcon);
+            // Set background color
+            Style labelStyle = PetIconLabel.getAllStyles();
+            labelStyle.setBgColor(0xe89091); // Green background color
+            labelStyle.setBgTransparency(255); // Opaque background
+
+            // Create a container with a centered layout for the icon
+            Container centerContainer = new Container(new FlowLayout(Component.CENTER));
+            centerContainer.add(PetIconLabel);
+
+            // Add the container with the icon to the HomePage
+            // Create a spacer to position the icon lower
+            Label spacer = new Label();
+            spacer.setPreferredH(Display.getInstance().convertToPixels(5)); // Adjust the height as needed
+
+            // Add the spacer and the container to the form
+            this.add(spacer);
+            this.add(centerContainer);
+
+            //this.add(PetIconLabel);
         }
 
 
@@ -176,6 +208,8 @@ public class MyApp extends com.codename1.system.Lifecycle {
         private void showSettingsPage() {
             SettingsPage settingsPage = new SettingsPage();
             settingsPage.setPreviousForm(this); // Set the previous form to the current instance of HomePage
+            
+            
             settingsPage.show();
         }
     
@@ -614,6 +648,11 @@ public class MyApp extends com.codename1.system.Lifecycle {
     
         public SettingsPage() {
             super("Settings", BoxLayout.y());
+
+            Image settingsIcon = FontImage.createMaterial(FontImage.MATERIAL_SETTINGS, new Style());
+            Label settingsIconLabel = new Label(settingsIcon);
+
+            this.add(settingsIconLabel);
     
             addButton("Account", () -> showSettingsPage(new AccountSettingsPage(this)));
             addButton("Privacy", () -> showSettingsPage(new PrivacySettingsPage(this)));
@@ -789,14 +828,26 @@ public class MyApp extends com.codename1.system.Lifecycle {
             this.previousForm = previousForm;
 
             // Add rate us components and logic here
+            Image thumbsUpIcon = FontImage.createMaterial(FontImage.MATERIAL_THUMB_UP, new Style());
+            Image thumbsDownIcon = FontImage.createMaterial(FontImage.MATERIAL_THUMB_DOWN, new Style());
+
+            Button thumbsUpButton = new Button(thumbsUpIcon );
+            Button thumbsDownButton = new Button(thumbsDownIcon );
+
+            thumbsUpButton.addActionListener(e -> showHomePage());
+            thumbsDownButton.addActionListener(e -> {new ContactSupportPage(previousForm).show(); // Assuming ContactSupportPage has a constructor accepting a Form
+            });
+
+            this.add(thumbsUpButton);
+            this.add(thumbsDownButton);
 
             Button goToPreviousPageButton = new Button("Go to Previous Page");
             goToPreviousPageButton.addActionListener(e -> goToPreviousPage());
 
-            Container contentContainer = new Container(BoxLayout.y());
-            contentContainer.add(new SpanLabel("Rate us content goes here"));
+            //Container contentContainer = new Container(BoxLayout.y());
+            //contentContainer.add(new SpanLabel("Rate us content goes here"));
 
-            add(contentContainer);
+            //add(contentContainer);
             add(goToPreviousPageButton);
         }
 
