@@ -56,17 +56,18 @@ public class TasksOverviewPage extends Form{
             // Add CheckBox components for each task
             for (Task t : tasks) {
                 CheckBox checkBox = new CheckBox(t.getTaskName());
+                checkBox.setSelected(t.isDone());
                 taskContainer.add(checkBox);
 
                 checkBox.addActionListener(e-> {if(checkBox.isSelected()){
-                    checkBox.setSelected(true);
                     taskManager.markTaskDone(t);
+                    
                     // taskContainer.removeComponent(checkBox);
                     // tasks.remove(t);
-                    // mainApp.showTaskOverview();
+                    mainApp.showTaskOverview();
                 }});
             }
-
+            // mainApp.showTaskOverview();
             add(taskContainer);
         }
         

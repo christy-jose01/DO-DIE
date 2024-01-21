@@ -160,8 +160,7 @@ public class MyApp extends com.codename1.system.Lifecycle {
 
     private void signIn(String username, String password) {
         if (isValidCredentials(username, password)) {
-            HomePage homePage = new HomePage(this);
-            homePage.show();
+            showTaskOverview();
         } else {
             Dialog.show("Invalid Credentials", "Please check your username and password", "OK", null);
         }
