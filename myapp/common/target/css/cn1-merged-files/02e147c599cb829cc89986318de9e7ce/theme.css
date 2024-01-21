@@ -7,7 +7,8 @@
 
 TitleArea {
     border:none;
-    background-color:rgb(255, 160, 169);
+    /*background-color:rgb(255, 160, 169);*/
+    background-color:rgb(255, 113, 127);
     padding: 2mm 10mm;
     margin:0;
 }
@@ -29,7 +30,7 @@ Button {
     border: 20px solid #ffffff; /* Adjust the color as needed */
     border-radius: 20px; /* This creates the rounded corners */
     padding: 2mm;
-    background-color: rgba(255, 160, 169, 1); 
+    background-color:rgb(255, 160, 169);
     color: rgb(255, 255, 255);
 }
 
@@ -55,13 +56,15 @@ DialogBody {
 /** Style for Dialog title bar text */
 DialogTitle {
     font-family: "native:MainLight";
-    background: rgb(255, 185, 185);
+    background:rgb(255, 185, 185);
+
     font-size: 4.5mm;
 }
 
 /** Style for the side menu */
 SideNavigationPanel {
-    color: rgb(255, 197, 197);    
+    color:rgb(255, 197, 197);
+
     padding: 2mm 1mm 1mm 1mm;
 }
 
@@ -79,7 +82,7 @@ SideCommand {
     border: none;
     text-decoration: none;
 
-    color: rgb(255, 197, 197);
+    color:rgb(255, 197, 197);
     font-family: "Monospace";
     font-size: 4mm;
     border-bottom: 2px solid #ffffff;

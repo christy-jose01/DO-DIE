@@ -42,7 +42,7 @@ import com.example.myapp.MyApp.CharacterStatusPage;
 import com.example.myapp.MyApp.CustomProgressBar;
 import com.example.myapp.MyApp.PreviousFormSetter;
 import com.example.myapp.MyApp.SettingsPage;
-import com.example.myapp.MyApp.Task;
+import com.example.myapp.Task;
 import com.example.myapp.MyApp.WeeklySummaryPage;
 import com.codename1.ui.TextArea;
 import static com.codename1.ui.CN.*;
@@ -72,6 +72,13 @@ import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.layouts.FlowLayout;
 import com.codename1.ui.Component;
+import com.codename1.ui.Button;
+import com.codename1.ui.Command;
+import com.codename1.ui.FontImage;
+import com.codename1.ui.Form;
+import com.codename1.ui.layouts.FlowLayout;
+import com.codename1.ui.events.ActionEvent;
+import com.codename1.ui.events.ActionListener;
 
 
 public class MyApp extends com.codename1.system.Lifecycle {
@@ -176,277 +183,6 @@ public class MyApp extends com.codename1.system.Lifecycle {
             Dialog.show("Error", "Unable to read feedback.", "OK", null);
         }
         return null; // Return null if there was an error
-    }
-
-    public class HomePage extends Form {
-
-        private final MyApp mainApp;
-        private CustomProgressBar customProgressBar;
-
-        public HomePage(MyApp mainApp) {
-            super("Home Page", BoxLayout.y());
-            this.mainApp = mainApp;
-
-            // Create an icon
-            Image homeIcon = FontImage.createMaterial(FontImage.MATERIAL_HOME, new Style());
-            Label homeIconLabel = new Label(homeIcon);
-        
-            // Add the icon to the HomePage
-            this.add(homeIconLabel);
-
-
-
-
-
-            getToolbar().addCommandToSideMenu("Tasks", null, e -> showTaskOverview());
-            getToolbar().addCommandToSideMenu("Character Selection", null, e -> showCharacterSelection());
-          //  getToolbar().addCommandToSideMenu("Character Selection", null, e -> showTab("Character Selection"));
-          //  getToolbar().addCommandToSideMenu("Character Status", null, e -> showTab("Character Status"));
-            getToolbar().addCommandToSideMenu("Character Status", null, e -> showCharacterStatus());
-            getToolbar().addCommandToSideMenu("Achievements", null, e -> showTab("Achievements"));
-        //    getToolbar().addCommandToSideMenu("Character Selection", null, e -> showTab("Character Selection"));
-            // getToolbar().addCommandToSideMenu("Character Status", null, e -> showTab("Character Status"));
-            getToolbar().addCommandToSideMenu("Weekly Summary", null, e -> showWeeklySummary());
-            getToolbar().addCommandToSideMenu("Settings", null, e -> showTab("Settings"));
-            getToolbar().addCommandToSideMenu("Logout", null, e -> logout());
-
-            
-
-            // Add the custom progress bar at the bottom
-            customProgressBar = new CustomProgressBar();
-            customProgressBar.setProgress(0.75f); // Set an initial progress value (change as needed)
-            add(BorderLayout.south(customProgressBar));
-
-            // Create the style for the icon
-            Style s = new Style();
-            s.setFont(FontImage.getMaterialDesignFont().derive(Display.getInstance().convertToPixels(30), Font.STYLE_PLAIN));
-
-            // Create the character icon
-            s.setFgColor(0xffa0a9); // Set the foreground color to red (in ARGB format)
-            Image PetIcon = FontImage.createMaterial(FontImage.MATERIAL_FACE, s);
-
-            // Use the icon in a button
-            Label PetIconLabel = new Label(PetIcon);
-            // Set background color
-            Style labelStyle = PetIconLabel.getAllStyles();
-            labelStyle.setBgColor(0xe89091); // Green background color
-            labelStyle.setBgTransparency(255); // Opaque background
-
-            // Create a container with a centered layout for the icon
-            Container centerContainer = new Container(new FlowLayout(Component.CENTER));
-            centerContainer.add(PetIconLabel);
-
-            // Add the container with the icon to the HomePage
-            // Create a spacer to position the icon lower
-            Label spacer = new Label();
-            spacer.setPreferredH(Display.getInstance().convertToPixels(5)); // Adjust the height as needed
-
-            // Add the spacer and the container to the form
-            this.add(spacer);
-            this.add(centerContainer);
-
-
-            //this.add(PetIconLabel);
-        }
-
-
-        public void updateProgressBar(float progress) {
-            customProgressBar.setProgress(progress);
-        }
-        
-        // Method to update the progress bar value
-        public void setCustomProgressBarValue(float value) {
-            if (customProgressBar != null) {
-                customProgressBar.setProgress(value);
-            }
-        }
-
-        private void showSettingsPage() {
-            SettingsPage settingsPage = new SettingsPage();
-            settingsPage.setPreviousForm(this); // Set the previous form to the current instance of HomePage
-            
-            
-            settingsPage.show();
-        }
-    
-        private void showTab(String tabName) {
-            if ("Settings".equals(tabName)) {
-                showSettingsPage();
-            } else {
-                Dialog.show("Tab Selected", "You selected the " + tabName + " tab", "OK", null);
-            }
-        }
-        
-        private void showWeeklySummary() {
-            WeeklySummaryPage weeklySummaryPage = new WeeklySummaryPage(this);
-            weeklySummaryPage.show();
-        }
-
-        private void logout() {
-            mainApp.showSignInForm();
-        }
-
-        private void showCharacterStatus() {
-            CharacterStatusPage characterStatusPage = new CharacterStatusPage(mainApp);
-            characterStatusPage.show();
-        }
-
-        private void showCharacterSelection(){
-            CharacterSelectionPage charSelectPage = new CharacterSelectionPage(mainApp);
-            charSelectPage.show();
-        }
-        
-    }
-
-    public class TasksOverviewPage extends Form{
-        private final MyApp mainApp;
-        private TaskManager taskManager;
-
-        public TasksOverviewPage(MyApp mainApp, TaskManager taskManager){
-            super("Tasks Overview", BoxLayout.y());
-            this.mainApp = mainApp;
-            if(taskManager == null){
-                taskManager = TaskManager.getInstance();
-            }
-            this.taskManager = taskManager;
-
-            List <Task> tasks = taskManager.getTasks();
-            // display tasks
-            if(tasks.isEmpty()){
-                // Sample label
-                Label label = new Label("No Tasks");
-                add(label);
-            } else {
-                Container taskContainer = new Container(BoxLayout.y());
-
-                // Add CheckBox components for each task
-                for (Task t : tasks) {
-                    CheckBox checkBox = new CheckBox(t.getTaskName());
-                    taskContainer.add(checkBox);
-                }
-
-                add(taskContainer);
-            }
-            
-            
-            // Buttons
-            // go back
-            Button backButton = new Button("Back to Homepage");
-            backButton.addActionListener(e->showHomePage());
-
-            // add task
-            Button addTaskButton = new Button("Add Task");
-            addTaskButton.addActionListener(e->showCreateTaskPage());
-
-            // adding to the Form
-            add(addTaskButton);
-            add(backButton);
-        }
-
-        private void showCreateTaskPage(){
-            CreateTaskPage createTaskPage = new CreateTaskPage(mainApp, taskManager);
-            createTaskPage.show();
-        }
-    }
-
-    public class CreateTaskPage extends Form {
-        private final MyApp mainApp;
-        private TaskManager taskManager;
-    
-        public CreateTaskPage(MyApp mainApp, TaskManager taskManager){
-            super("Create Your Task", BoxLayout.y());
-            this.mainApp = mainApp;
-            if(taskManager == null){
-                taskManager = TaskManager.getInstance();
-            }
-            this.taskManager = taskManager;
-
-            //add character selection page components and logic here
-            TextComponent TaskName = new TextComponent().label("Task Name");
-            
-            Picker Timepicker = new Picker();
-            Timepicker.setType(Display.PICKER_TYPE_TIME);
-
-            // back button
-            Button backToOverviewButton = new Button("Back to Tasks");
-            backToOverviewButton.addActionListener(e -> saveTask(TaskName.getText(), Timepicker.getTime()));
-            // backToOverviewButton.addActionListener(e ->showTaskOverview());
-
-            add(TaskName);
-            add(Timepicker);
-            add(backToOverviewButton);
-        }
-
-        private void showTaskOverview(){
-            mainApp.showTaskOverview();
-        }
-
-        private void saveTask(String taskName, int dueDate) {
-            if(!taskName.isEmpty()){
-                Task newTask = new Task(taskName, dueDate);
-                taskManager.addTask(newTask);
-                showTaskOverview();
-            }
-        }
-    }
-
-    public class Task {
-        private String taskname;
-        private int duetime;
-        
-        public Task(String taskname, int duetime){
-            this.taskname = taskname;
-            this.duetime = duetime;
-        }
-
-        public String getTaskName(){
-            return taskname;
-        }
-
-        public void setTaskName(String taskName) {
-            this.taskname = taskName;
-        }
-    
-        public int getDueDate() {
-            return duetime;
-        }
-    
-        public void setDueDate(int dueDate) {
-            this.duetime = dueDate;
-        }
-    }
-
-    // TaskManager
-    public static class TaskManager {
-        private static TaskManager instance;
-        private List<Task> tasks;
-
-        private TaskManager() {
-            this.tasks = new ArrayList<>();
-        }
-
-        public static TaskManager getInstance() {
-            if (instance == null) {
-                instance = new TaskManager();
-            }
-            return instance;
-        }
-
-        public List<Task> getTasks() {
-            return tasks;
-        }
-
-        public void addTask(Task task) {
-            if (instance == null){
-                instance = TaskManager.getInstance();
-            }
-            if (tasks == null) {
-                tasks = new ArrayList<>();
-            }
-            tasks.add(task);
-        }
-
-        // Add other methods as needed
     }
 
 
@@ -684,10 +420,7 @@ public class MyApp extends com.codename1.system.Lifecycle {
         }
     }
     
-    
-    
-    
-    
+
 
     // Update the character's health
     
@@ -774,10 +507,26 @@ public class MyApp extends com.codename1.system.Lifecycle {
             Button goToPreviousPageButton = new Button("Go to Previous Page");
             goToPreviousPageButton.addActionListener(e -> goToPreviousPage());
 
-            Container contentContainer = new Container(BoxLayout.y());
-            contentContainer.add(new SpanLabel("Account settings content goes here"));
+            // Days of the week
+            String[] accountSettings = {"Profile", "Password & Security", "Your Information", "Personal Details", "Ad Preferences", "Payments"};
+    
+            for (String setting : accountSettings) {
+                
+                // Day label
+                Label accountSettingLabel = new Label(setting);
+                accountSettingLabel.getAllStyles().setFgColor(0x000000);
+                add(accountSettingLabel);
+    
+                // Spacing between days
+                //add(createSpacer());
+            }
 
-            add(contentContainer);
+            //add(contentContainer);
+            Label spacer = new Label();
+            spacer.setPreferredH(Display.getInstance().convertToPixels(30)); // Adjust the height as needed
+
+            // Add the spacer and the container to the form
+            this.add(spacer);
             add(goToPreviousPageButton);
         }
 
@@ -792,6 +541,7 @@ public class MyApp extends com.codename1.system.Lifecycle {
     public class PrivacySettingsPage extends Form {
 
         private final Form previousForm;
+        
 
         public PrivacySettingsPage(Form previousForm) {
             super("Privacy Settings", BoxLayout.y());
@@ -820,20 +570,54 @@ public class MyApp extends com.codename1.system.Lifecycle {
     public class NotificationSettingsPage extends Form {
 
         private final Form previousForm;
+        private boolean isToggled;
 
         public NotificationSettingsPage(Form previousForm) {
-            super("Notification Settings", BoxLayout.y());
+            super("Notification", BoxLayout.y());
             this.previousForm = previousForm;
+
+            
+            isToggled = false;
+
+            
+            Button toggleButton = new Button("OFF");
+            toggleButton.getAllStyles().setBgTransparency(255); // Ensure background is opaque
+            toggleButton.getAllStyles().setBgColor(0xFFFFA0A9); // Start with red background
+
+
+            toggleButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent evt) {
+                    isToggled = !isToggled; 
+
+                    if (isToggled) {
+                        toggleButton.setText("ON"); 
+                        toggleButton.getAllStyles().setBgColor(0xFF77DD77); // Set background to green
+                    } else {
+                        toggleButton.setText("OFF"); 
+                        toggleButton.getAllStyles().setBgColor(0xFFFF8C9A); // Set background to green
+                        
+                    }
+                    toggleButton.repaint(); // Repaint the button to update the style
+                }
+            });
+
+        // Add the toggle button to the form
+            add(toggleButton);
 
             // Add notification settings components and logic here
 
             Button goToPreviousPageButton = new Button("Go to Previous Page");
             goToPreviousPageButton.addActionListener(e -> goToPreviousPage());
 
-            Container contentContainer = new Container(BoxLayout.y());
-            contentContainer.add(new SpanLabel("Notification settings content goes here"));
+            Label spacer = new Label();
+            spacer.setPreferredH(Display.getInstance().convertToPixels(80)); // Adjust the height as needed
 
-            add(contentContainer);
+            // Add the spacer and the container to the form
+            this.add(spacer);
+
+
+            //add(contentContainer);
             add(goToPreviousPageButton);
         }
 
@@ -853,17 +637,38 @@ public class MyApp extends com.codename1.system.Lifecycle {
             super("Contact Support", BoxLayout.y());
             this.previousForm = previousForm;
 
-            // Add contact support components and logic here
-            Label contactLabel = new Label("Contact Us:");
-            Label phoneNumberLabel = new Label("Phone: +1 (555) 123-4567");
+            Label spacer1 = new Label();
+            spacer1.setPreferredH(Display.getInstance().convertToPixels(8)); // Adjust the height as needed
+
+            // Add the spacer and the container to the form
+            this.add(spacer1);
+
+            
+        // Creating labels for contact information
+            //Label contactHeaderLabel = new Label("Contact Us:");
+            Label contactAndreaLabel = new Label("Andrea Chen - ychen729@ucsc.edu");
+            Label contactChristyLabel = new Label("Christy Jose - cmjose@ucsc.edu");
+            Label contactShipraLabel = new Label("Shipra Ithal - sithal@ucsc.edu");
+
+            // Adding labels to a container
+            Container contactContainer = new Container(BoxLayout.y());
+            contactContainer.addAll(contactAndreaLabel, contactChristyLabel, contactShipraLabel);
+
+
 
             Button goToPreviousPageButton = new Button("Go to Previous Page");
             goToPreviousPageButton.addActionListener(e -> goToPreviousPage());
 
-            Container contentContainer = new Container(BoxLayout.y());
-            contentContainer.addAll(contactLabel, phoneNumberLabel);
+            //Container contentContainer = new Container(BoxLayout.y());
+            //contentContainer.addAll(contactLabel, phoneNumberLabel);
 
-            add(contentContainer);
+            add(contactContainer);
+
+            Label spacer = new Label();
+            spacer.setPreferredH(Display.getInstance().convertToPixels(68)); // Adjust the height as needed
+
+            // Add the spacer and the container to the form
+            this.add(spacer);
             add(goToPreviousPageButton);
         }
 
@@ -907,8 +712,37 @@ public class MyApp extends com.codename1.system.Lifecycle {
             add(goToPreviousPageButton);
 
             Label spacer = new Label();
-            spacer.setUIID("Spacer"); // You can set a UIID for styling if needed
-            add(spacer);
+            spacer.setPreferredH(Display.getInstance().convertToPixels(30)); // Adjust the height as needed
+
+            // Add the spacer and the container to the form
+            this.add(spacer);
+
+            // Create the style for the icon
+            Style s = new Style();
+            s.setFont(FontImage.getMaterialDesignFont().derive(Display.getInstance().convertToPixels(30), Font.STYLE_PLAIN));
+
+            // Create the character icon
+            s.setFgColor(0xffa0a9); // Set the foreground color to red (in ARGB format)
+            Image heartIcon = FontImage.createMaterial(FontImage.MATERIAL_FAVORITE, s);
+
+            // Use the icon in a button
+            Label heartIconLabel = new Label(heartIcon);
+            // Set background color
+            Style labelStyle = heartIconLabel.getAllStyles();
+            labelStyle.setBgColor(0xe89091); // Green background color
+            labelStyle.setBgTransparency(255); // Opaque background
+
+            // Create a container with a centered layout for the icon
+            Container centerContainer = new Container(new FlowLayout(Component.CENTER));
+            centerContainer.add(heartIconLabel);
+
+            this.add(centerContainer);
+
+            Label spacer1 = new Label();
+            spacer1.setPreferredH(Display.getInstance().convertToPixels(10)); // Adjust the height as needed
+
+            // Add the spacer and the container to the form
+            this.add(spacer1);
 
             Button checkFeedbackButton = new Button("People love us!!");
             checkFeedbackButton.addActionListener(e -> checkAndDisplayFeedback());
@@ -948,7 +782,7 @@ public class MyApp extends com.codename1.system.Lifecycle {
         }
     }
 
-    public class CustomProgressBar extends Container {
+    public static class CustomProgressBar extends Container {
 
         private float progress;
 
