@@ -72,6 +72,13 @@ import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.layouts.FlowLayout;
 import com.codename1.ui.Component;
+import com.codename1.ui.Button;
+import com.codename1.ui.Command;
+import com.codename1.ui.FontImage;
+import com.codename1.ui.Form;
+import com.codename1.ui.layouts.FlowLayout;
+import com.codename1.ui.events.ActionEvent;
+import com.codename1.ui.events.ActionListener;
 
 
 public class MyApp extends com.codename1.system.Lifecycle {
@@ -684,10 +691,7 @@ public class MyApp extends com.codename1.system.Lifecycle {
         }
     }
     
-    
-    
-    
-    
+
 
     // Update the character's health
     
@@ -774,10 +778,26 @@ public class MyApp extends com.codename1.system.Lifecycle {
             Button goToPreviousPageButton = new Button("Go to Previous Page");
             goToPreviousPageButton.addActionListener(e -> goToPreviousPage());
 
-            Container contentContainer = new Container(BoxLayout.y());
-            contentContainer.add(new SpanLabel("Account settings content goes here"));
+            // Days of the week
+            String[] accountSettings = {"Profile", "Password & Security", "Your Information", "Personal Details", "Ad Preferences", "Payments"};
+    
+            for (String setting : accountSettings) {
+                
+                // Day label
+                Label accountSettingLabel = new Label(setting);
+                accountSettingLabel.getAllStyles().setFgColor(0x000000);
+                add(accountSettingLabel);
+    
+                // Spacing between days
+                //add(createSpacer());
+            }
 
-            add(contentContainer);
+            //add(contentContainer);
+            Label spacer = new Label();
+            spacer.setPreferredH(Display.getInstance().convertToPixels(30)); // Adjust the height as needed
+
+            // Add the spacer and the container to the form
+            this.add(spacer);
             add(goToPreviousPageButton);
         }
 
@@ -792,6 +812,7 @@ public class MyApp extends com.codename1.system.Lifecycle {
     public class PrivacySettingsPage extends Form {
 
         private final Form previousForm;
+        
 
         public PrivacySettingsPage(Form previousForm) {
             super("Privacy Settings", BoxLayout.y());
@@ -820,20 +841,54 @@ public class MyApp extends com.codename1.system.Lifecycle {
     public class NotificationSettingsPage extends Form {
 
         private final Form previousForm;
+        private boolean isToggled;
 
         public NotificationSettingsPage(Form previousForm) {
-            super("Notification Settings", BoxLayout.y());
+            super("Notification", BoxLayout.y());
             this.previousForm = previousForm;
+
+            
+            isToggled = false;
+
+            
+            Button toggleButton = new Button("OFF");
+            toggleButton.getAllStyles().setBgTransparency(255); // Ensure background is opaque
+            toggleButton.getAllStyles().setBgColor(0xFFFFA0A9); // Start with red background
+
+
+            toggleButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent evt) {
+                    isToggled = !isToggled; 
+
+                    if (isToggled) {
+                        toggleButton.setText("ON"); 
+                        toggleButton.getAllStyles().setBgColor(0xFF77DD77); // Set background to green
+                    } else {
+                        toggleButton.setText("OFF"); 
+                        toggleButton.getAllStyles().setBgColor(0xFFFF8C9A); // Set background to green
+                        
+                    }
+                    toggleButton.repaint(); // Repaint the button to update the style
+                }
+            });
+
+        // Add the toggle button to the form
+            add(toggleButton);
 
             // Add notification settings components and logic here
 
             Button goToPreviousPageButton = new Button("Go to Previous Page");
             goToPreviousPageButton.addActionListener(e -> goToPreviousPage());
 
-            Container contentContainer = new Container(BoxLayout.y());
-            contentContainer.add(new SpanLabel("Notification settings content goes here"));
+            Label spacer = new Label();
+            spacer.setPreferredH(Display.getInstance().convertToPixels(80)); // Adjust the height as needed
 
-            add(contentContainer);
+            // Add the spacer and the container to the form
+            this.add(spacer);
+
+
+            //add(contentContainer);
             add(goToPreviousPageButton);
         }
 
@@ -853,17 +908,38 @@ public class MyApp extends com.codename1.system.Lifecycle {
             super("Contact Support", BoxLayout.y());
             this.previousForm = previousForm;
 
-            // Add contact support components and logic here
-            Label contactLabel = new Label("Contact Us:");
-            Label phoneNumberLabel = new Label("Phone: +1 (555) 123-4567");
+            Label spacer1 = new Label();
+            spacer1.setPreferredH(Display.getInstance().convertToPixels(8)); // Adjust the height as needed
+
+            // Add the spacer and the container to the form
+            this.add(spacer1);
+
+            
+        // Creating labels for contact information
+            //Label contactHeaderLabel = new Label("Contact Us:");
+            Label contactAndreaLabel = new Label("Andrea Chen - ychen729@ucsc.edu");
+            Label contactChristyLabel = new Label("Christy Jose - cmjose@ucsc.edu");
+            Label contactShipraLabel = new Label("Shipra Ithal - sithal@ucsc.edu");
+
+            // Adding labels to a container
+            Container contactContainer = new Container(BoxLayout.y());
+            contactContainer.addAll(contactAndreaLabel, contactChristyLabel, contactShipraLabel);
+
+
 
             Button goToPreviousPageButton = new Button("Go to Previous Page");
             goToPreviousPageButton.addActionListener(e -> goToPreviousPage());
 
-            Container contentContainer = new Container(BoxLayout.y());
-            contentContainer.addAll(contactLabel, phoneNumberLabel);
+            //Container contentContainer = new Container(BoxLayout.y());
+            //contentContainer.addAll(contactLabel, phoneNumberLabel);
 
-            add(contentContainer);
+            add(contactContainer);
+
+            Label spacer = new Label();
+            spacer.setPreferredH(Display.getInstance().convertToPixels(68)); // Adjust the height as needed
+
+            // Add the spacer and the container to the form
+            this.add(spacer);
             add(goToPreviousPageButton);
         }
 
@@ -907,8 +983,37 @@ public class MyApp extends com.codename1.system.Lifecycle {
             add(goToPreviousPageButton);
 
             Label spacer = new Label();
-            spacer.setUIID("Spacer"); // You can set a UIID for styling if needed
-            add(spacer);
+            spacer.setPreferredH(Display.getInstance().convertToPixels(30)); // Adjust the height as needed
+
+            // Add the spacer and the container to the form
+            this.add(spacer);
+
+            // Create the style for the icon
+            Style s = new Style();
+            s.setFont(FontImage.getMaterialDesignFont().derive(Display.getInstance().convertToPixels(30), Font.STYLE_PLAIN));
+
+            // Create the character icon
+            s.setFgColor(0xffa0a9); // Set the foreground color to red (in ARGB format)
+            Image heartIcon = FontImage.createMaterial(FontImage.MATERIAL_FAVORITE, s);
+
+            // Use the icon in a button
+            Label heartIconLabel = new Label(heartIcon);
+            // Set background color
+            Style labelStyle = heartIconLabel.getAllStyles();
+            labelStyle.setBgColor(0xe89091); // Green background color
+            labelStyle.setBgTransparency(255); // Opaque background
+
+            // Create a container with a centered layout for the icon
+            Container centerContainer = new Container(new FlowLayout(Component.CENTER));
+            centerContainer.add(heartIconLabel);
+
+            this.add(centerContainer);
+
+            Label spacer1 = new Label();
+            spacer1.setPreferredH(Display.getInstance().convertToPixels(10)); // Adjust the height as needed
+
+            // Add the spacer and the container to the form
+            this.add(spacer1);
 
             Button checkFeedbackButton = new Button("People love us!!");
             checkFeedbackButton.addActionListener(e -> checkAndDisplayFeedback());
