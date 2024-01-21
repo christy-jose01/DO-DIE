@@ -22,7 +22,6 @@ import com.example.myapp.MyApp.WeeklySummaryPage;
 public class HomePage extends Form {
 
     private final MyApp mainApp;
-    private CustomProgressBar customProgressBar;
 
     public HomePage(MyApp mainApp) {
         super("Home Page", BoxLayout.y());
@@ -35,19 +34,8 @@ public class HomePage extends Form {
         // Add the icon to the HomePage
         this.add(homeIconLabel);
 
-        getToolbar().addCommandToSideMenu("Tasks", null, e -> mainApp.showTaskOverview());
-        getToolbar().addCommandToSideMenu("Character Selection", null, e -> showCharacterSelection());
-        getToolbar().addCommandToSideMenu("Character Status", null, e -> showCharacterStatus());
-        getToolbar().addCommandToSideMenu("Achievements", null, e -> showTab("Achievements"));
-        getToolbar().addCommandToSideMenu("Weekly Summary", null, e -> showWeeklySummary());
-        getToolbar().addCommandToSideMenu("Settings", null, e -> showTab("Settings"));
-        getToolbar().addCommandToSideMenu("Logout", null, e -> logout());
 
 
-        // Add the custom progress bar at the bottom
-        customProgressBar = new CustomProgressBar();
-        customProgressBar.setProgress(0.75f); // Set an initial progress value (change as needed)
-        add(BorderLayout.south(customProgressBar));
 
         // Create the style for the icon
         Style s = new Style();
@@ -80,50 +68,8 @@ public class HomePage extends Form {
     }
 
 
-    public void updateProgressBar(float progress) {
-        customProgressBar.setProgress(progress);
-    }
+
+
     
-    // Method to update the progress bar value
-    public void setCustomProgressBarValue(float value) {
-        if (customProgressBar != null) {
-            customProgressBar.setProgress(value);
-        }
-    }
-
-    private void showSettingsPage() {
-        SettingsPage settingsPage = mainApp.new SettingsPage();
-        settingsPage.setPreviousForm(this); // Set the previous form to the current instance of HomePage
-        
-        
-        settingsPage.show();
-    }
-
-    private void showTab(String tabName) {
-        if ("Settings".equals(tabName)) {
-            showSettingsPage();
-        } else {
-            Dialog.show("Tab Selected", "You selected the " + tabName + " tab", "OK", null);
-        }
-    }
-    
-    private void showWeeklySummary() {
-        WeeklySummaryPage weeklySummaryPage = mainApp.new WeeklySummaryPage(this);
-        weeklySummaryPage.show();
-    }
-
-    private void logout() {
-        mainApp.showSignInForm();
-    }
-
-    private void showCharacterStatus() {
-        CharacterStatusPage characterStatusPage = mainApp.new CharacterStatusPage(mainApp);
-        characterStatusPage.show();
-    }
-
-    private void showCharacterSelection(){
-        CharacterSelectionPage charSelectPage = mainApp.new CharacterSelectionPage(mainApp);
-        charSelectPage.show();
-    }
     
 }

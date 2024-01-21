@@ -189,6 +189,8 @@ public class MyApp extends com.codename1.system.Lifecycle {
         tasksOverviewPage.show();
     }
 
+
+
     public void saveFeedback(String feedback) {
         try {
             Storage.getInstance().writeObject("feedback", feedback);
@@ -237,7 +239,7 @@ public class MyApp extends com.codename1.system.Lifecycle {
             
             
             Button backButton = new Button(FontImage.createMaterial(FontImage.MATERIAL_ARROW_BACK, "Back", 5));
-            backButton.addActionListener(e -> showHomePage());
+            backButton.addActionListener(e -> showTaskOverview());
             addComponent(backButton);
             
         }
@@ -409,7 +411,7 @@ public class MyApp extends com.codename1.system.Lifecycle {
 
             // "Back" button with a single arrow icon
             Button backButton = new Button(FontImage.createMaterial(FontImage.MATERIAL_ARROW_BACK, "Back", 5));
-            backButton.addActionListener(e -> showHomePage());
+            backButton.addActionListener(e -> showTaskOverview());
             addComponent(backButton);
 
             // Example: Add a button to feed the pet
