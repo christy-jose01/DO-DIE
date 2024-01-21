@@ -93,7 +93,15 @@ public class MyApp extends com.codename1.system.Lifecycle {
 
     @Override
     public void runApp() {
-        signInForm = new Form("Sign in", BoxLayout.y());
+        
+        signInForm = new Form("DO-DIE", BoxLayout.y());
+
+        Label spacer = new Label();
+        spacer.setPreferredH(Display.getInstance().convertToPixels(25)); // Adjust the height as needed
+
+        // Add the spacer and the container to the form
+        signInForm.add(spacer);
+
 
         TextComponent usernameCaption = new TextComponent();
         usernameCaption.label("username");
@@ -113,8 +121,41 @@ public class MyApp extends com.codename1.system.Lifecycle {
         signInButton.addActionListener(e -> signIn(usernameCaption.getText(), passwordField.getText()));
 
         signInForm.getToolbar().addMaterialCommandToSideMenu("DO-DIE Sign In Page", FontImage.MATERIAL_CHECK, 4, e -> hello());
-        signInForm.show();
 
+                //signInForm.getToolbar().addMaterialCommandToSideMenu("DO-DIE Sign In Page", FontImage.MATERIAL_CHECK, 4, e -> hello());
+        //signInForm.show();
+
+        // Adding "Forgot Password?" button at the bottom
+        Button forgotPasswordButton = new Button("Forgot Password?");
+        forgotPasswordButton.addActionListener(e -> {
+            Dialog forgotPasswordDialog = new Dialog("Reset Password");
+            forgotPasswordDialog.setLayout(new BorderLayout());
+
+            TextArea emailField = new TextArea(1, 20);
+            //TextArea feedbackArea = new TextArea(5, 20);
+            emailField.setHint("Enter your email");
+            //emailField.setPreferredW(Display.getInstance().getDisplayWidth() / 2); 
+            Button submitButton = new Button("Submit");
+            submitButton.addActionListener(submitEvent -> {
+                // Logic to handle the email submission
+                String email = emailField.getText();
+                // Here, you would typically call a method to handle the password reset request
+                // For example: resetPassword(email);
+                
+                // Show confirmation dialog
+                Dialog.show("Email Sent", "A password reset link has been sent to: " + email, "OK", null);
+
+                // Close the forgot password dialog
+                forgotPasswordDialog.dispose();
+        });
+            forgotPasswordDialog.add(BorderLayout.CENTER, emailField);
+            forgotPasswordDialog.add(BorderLayout.SOUTH, submitButton);
+
+            forgotPasswordDialog.show();
+
+        });
+        signInForm.add(forgotPasswordButton);
+        signInForm.show();
     }
 
     private void signIn(String username, String password) {
@@ -221,6 +262,7 @@ public class MyApp extends com.codename1.system.Lifecycle {
         private Date birthday;
         private Date lastMeal;
         private Date lastDrink;
+        long appStartTime = System.currentTimeMillis();
     
         public Pet(Date lastMeal, Date lastDrink) {
             this.name = "Yoshi";
@@ -230,8 +272,9 @@ public class MyApp extends com.codename1.system.Lifecycle {
         }
     
         public int getAge() {
-            long timeSince = calcTimeSince(birthday);
-            return (int) timeSince;
+            long elapsedTime = System.currentTimeMillis() - appStartTime;
+            long seconds = elapsedTime / 1000;
+            return (int) seconds;
         }
     
         public boolean isAboutToDie() {
@@ -373,7 +416,7 @@ public class MyApp extends com.codename1.system.Lifecycle {
 
         // Example: Add a button to feed the pet
         Button feedButton = new Button("Feed");
-        //feedButton.addActionListener(e -> showTaskPage());
+        feedButton.addActionListener(e -> showTaskOverview());
         addComponent(feedButton);
 
         // Labels to display pet information
@@ -554,11 +597,41 @@ public class MyApp extends com.codename1.system.Lifecycle {
             goToPreviousPageButton.addActionListener(e -> goToPreviousPage());
 
             Container contentContainer = new Container(BoxLayout.y());
-            contentContainer.add(new SpanLabel("Privacy settings content goes here"));
+            String privacyText = "Absolutely! It's always interesting to think about the vastness of the universe and how we, as humans, fit into it. We're on this relatively small planet, spinning around a ball of fiery gas, in a galaxy that's just one of billions. It's a humbling thought." +
+            "Then there's the marvel of human ingenuity. From the creation of simple tools and fire to modern technology like smartphones and space rockets, our journey has been incredible. We're constantly pushing the boundaries of what's possible, exploring new frontiers, both on Earth and beyond." +
+            "YAP YAP YAP YAP BLAH BLAH BLAH BLAH YAP YAP YAP YAP BLAH BLAH BLAH. If y'all notice this, you're attentive asf LOL. fascinating to consider the evolution of languages too. How they've grown, adapted, and morphed over thousands of years. Languages are like living, breathing entities," +
+            "constantly evolving with us. It's a testament to our need to communicate, to share ideas, and to connect with one another. And let's not forget about the little joys of everyday life, a freshly brewed cup of coffee, the smell of rain, a good book, or a heartwarming conversation with a friend." + 
+            "These simple pleasures add so much value to our lives, often more than never than we realize. Oh and also Andrea, Christy, and I slayed we da best team ever! It's these small moments that string together to form the tapestry of our lives. So you're basically signing your life away to this app (jk lol unless...)" +
+            "Sprinkle Sprinkle.";
+            
+            contentContainer.add(new SpanLabel(privacyText));
+
+            //CheckBox checkBox = new CheckBox(t.getTaskName());
+            //taskContainer.add(checkBox);
 
             add(contentContainer);
+
+            Label spacer = new Label();
+            spacer.setPreferredH(Display.getInstance().convertToPixels(10)); // Adjust the height as needed
+
+            // Add the spacer and the container to the form
+            this.add(spacer);
+
+            // CheckBox with a label
+            CheckBox agreeCheckBox = new CheckBox("I agree to terms and conditions");
+            // Optionally, you can set the CheckBox to be initially unchecked
+            agreeCheckBox.setSelected(false);
+            contentContainer.add(agreeCheckBox); // Add the CheckBox to the container
+
             add(goToPreviousPageButton);
+
+            Label spacer1 = new Label();
+            spacer1.setPreferredH(Display.getInstance().convertToPixels(5)); // Adjust the height as needed
+
+            // Add the spacer and the container to the form
+            this.add(spacer1);
         }
+
 
         private void goToPreviousPage() {
             if (previousForm != null) {
