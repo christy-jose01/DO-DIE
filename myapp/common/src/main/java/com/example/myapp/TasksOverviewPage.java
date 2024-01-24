@@ -38,7 +38,7 @@ public class TasksOverviewPage extends Form{
         this.tasks =  taskManager.getTasks();
 
         getToolbar().addCommandToSideMenu("Tasks", null, e -> mainApp.showTaskOverview());
-        getToolbar().addCommandToSideMenu("Character Selection", null, e -> showCharacterSelection());
+        getToolbar().addCommandToSideMenu("Character Selection", null, e -> mainApp.showCharacterSelection());
         getToolbar().addCommandToSideMenu("Character Status", null, e -> showCharacterStatus());
         getToolbar().addCommandToSideMenu("Achievements", null, e -> showTab("Achievements"));
         getToolbar().addCommandToSideMenu("Weekly Summary", null, e -> showWeeklySummary());
@@ -161,10 +161,7 @@ public class TasksOverviewPage extends Form{
         characterStatusPage.show();
     }
 
-    private void showCharacterSelection(){
-        CharacterSelectionPage charSelectPage = mainApp.new CharacterSelectionPage(mainApp);
-        charSelectPage.show();
-    }
+
 
 
 
