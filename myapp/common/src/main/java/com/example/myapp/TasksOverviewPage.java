@@ -9,16 +9,13 @@ import com.codename1.ui.Label;
 import com.codename1.ui.layouts.BorderLayout;
 // import com.codename1.ui.List;
 import com.codename1.ui.layouts.BoxLayout;
-import com.example.myapp.CreateTaskPage;
-import com.example.myapp.MyApp.CharacterSelectionPage;
-import com.example.myapp.MyApp.CharacterStatusPage;
+import com.example.myapp.CharacterSelectionPage;
+import com.example.myapp.CharacterStatusPage;
 import com.example.myapp.MyApp.CustomProgressBar;
 import com.example.myapp.MyApp.SettingsPage;
 import com.example.myapp.MyApp.WeeklySummaryPage;
 import com.example.myapp.Task;
 import com.example.myapp.TaskManager;
-// import com.example.myapp.MyApp.CustomProgressBar;
-import com.codename1.ui.CheckBox;
 import java.util.ArrayList;
 import java.util.List;
 

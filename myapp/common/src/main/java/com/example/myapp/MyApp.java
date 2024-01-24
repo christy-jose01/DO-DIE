@@ -380,12 +380,6 @@ public class MyApp extends com.codename1.system.Lifecycle {
         }
     }
 
-    
-    
-    
-
-
-    
 
     
   //  Now, the CharacterStatusPage class uses a Label to display the character status. You can update the character status by calling the updateCharacterStatus method with the desired status string. This should simplify the representation of character status without the need for a progress bar. If you have any specific requirements or adjustments, feel free to let me know!
