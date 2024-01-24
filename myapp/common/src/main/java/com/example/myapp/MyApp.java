@@ -43,6 +43,7 @@ import com.example.myapp.MyApp.CustomProgressBar;
 import com.example.myapp.MyApp.PreviousFormSetter;
 import com.example.myapp.MyApp.SettingsPage;
 import com.example.myapp.Task;
+import com.example.myapp.TaskManager;
 import com.example.myapp.MyApp.WeeklySummaryPage;
 import com.codename1.ui.TextArea;
 import static com.codename1.ui.CN.*;
@@ -191,6 +192,11 @@ public class MyApp extends com.codename1.system.Lifecycle {
     public void showCharacterSelection(){
         CharacterSelectionPage charSelectPage = new CharacterSelectionPage(this);
         charSelectPage.show();
+    }
+
+    public void showCharacterStatus() {
+        CharacterStatusPage characterStatusPage = new CharacterStatusPage(this);
+        characterStatusPage.show();
     }
 
 
@@ -376,76 +382,9 @@ public class MyApp extends com.codename1.system.Lifecycle {
 
     
     
-    public class CharacterStatusPage extends Form {
-    private final MyApp mainApp;
-    private Pet pet;
-
-    private Label ageLabel;
-    private Label healthLabel;
-    private Label happinessLabel;
-
-    public CharacterStatusPage(MyApp mainApp) {
-        super("Character Status", BoxLayout.y());
-        this.mainApp = mainApp;
-
-        // Initialize the Pet
-        pet = new Pet(new Date(), new Date());
-
-            // "Back" button with a single arrow icon
-            Button backButton = new Button(FontImage.createMaterial(FontImage.MATERIAL_ARROW_BACK, "Back", 5));
-            backButton.addActionListener(e -> showTaskOverview());
-            addComponent(backButton);
-
-        // Example: Add a button to feed the pet
-        Button feedButton = new Button("Feed");
-        feedButton.addActionListener(e -> showTaskOverview());
-        addComponent(feedButton);
-
-        // Labels to display pet information
-        ageLabel = new Label("Age: ");
-        addComponent(ageLabel);
-
-        healthLabel = new Label("Health: ");
-        addComponent(healthLabel);
-
-        happinessLabel = new Label("Happiness: ");
-        addComponent(happinessLabel);
-
-        // Add other UI components or actions as needed
-        // ...
-
-        // Initialize the UI
-        updateUI();
-
-        // Set up a timer to update UI every second
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                updateUI();
-            }
-        }, 0, 1000); // Update every second
-    }
-
-
-    private void updateUI() {
-        // Update UI elements based on pet's status
-        int ageInSeconds = pet.getAge();
-        String health = pet.getHunger(); // Assuming you have a getHealth() method in Pet class
-        String happinessLevel = pet.getHappinessLevel();
-    
-        // Update UI components accordingly
-        Display.getInstance().callSerially(() -> {
-            ageLabel.setText("Age: " + ageInSeconds + " seconds");
-            healthLabel.setText("Health: " + health);
-            happinessLabel.setText("Happiness: " + happinessLevel);
-                });
-        }
-    }
     
 
 
-    // Update the character's health
     
 
     

@@ -39,7 +39,7 @@ public class TasksOverviewPage extends Form{
 
         getToolbar().addCommandToSideMenu("Tasks", null, e -> mainApp.showTaskOverview());
         getToolbar().addCommandToSideMenu("Character Selection", null, e -> mainApp.showCharacterSelection());
-        getToolbar().addCommandToSideMenu("Character Status", null, e -> showCharacterStatus());
+        getToolbar().addCommandToSideMenu("Character Status", null, e -> mainApp.showCharacterStatus());
         getToolbar().addCommandToSideMenu("Achievements", null, e -> showTab("Achievements"));
         getToolbar().addCommandToSideMenu("Weekly Summary", null, e -> showWeeklySummary());
         getToolbar().addCommandToSideMenu("Settings", null, e -> showTab("Settings"));
@@ -156,10 +156,7 @@ public class TasksOverviewPage extends Form{
         mainApp.showSignInForm();
     }
 
-    private void showCharacterStatus() {
-        CharacterStatusPage characterStatusPage = mainApp.new CharacterStatusPage(mainApp);
-        characterStatusPage.show();
-    }
+
 
 
 
